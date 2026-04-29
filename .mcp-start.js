@@ -75,7 +75,16 @@ spawnSync('git', ['merge', '--ff-only', '--quiet', '@{u}'], {
   timeout: 5000,
 });
 
-// 5. Windows: npx ships as npx.cmd which CreateProcess rejects. Prepend node's
+// 5. Ensure .obsidian/ exists so obsidian-mcp-pro vault validation finds it.
+// Cloned vaults don't have .obsidian/ (it's gitignored); creating it at runtime
+// avoids the EPERM that occurs on Windows when the directory is missing and
+// Node's fs.accessSync maps the not-found case to ERROR_ACCESS_DENIED.
+const obsidianDir = path.join(VAULT_DIR, '.obsidian');
+if (!fs.existsSync(obsidianDir)) {
+  try { fs.mkdirSync(obsidianDir, { recursive: true }); } catch (_) { /* best-effort */ }
+}
+
+// 6. Windows: npx ships as npx.cmd which CreateProcess rejects. Prepend node's
 // directory to PATH and use shell:true so cmd.exe resolves the .cmd shim.
 if (process.platform === 'win32') {
   const nodeDir = path.dirname(process.execPath);
