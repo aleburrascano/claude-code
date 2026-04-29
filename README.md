@@ -1,19 +1,31 @@
-# claude-code
+# claude-code-wiki
 
-A personal knowledge wiki powered by [vaultkit](https://github.com/aleburrascano/vaultkit).
+Alessandro's personal knowledge wiki on getting the most out of Claude Code.
 
-**Site**: https://aleburrascano.github.io/claude-code *(live after first deploy)*
+Topics covered: skills, context engineering, token efficiency, reasoning quality, subagents, hooks, and MCP.
 
 ## Structure
 
 ```
-raw/    ← source material (immutable — never edit directly)
-wiki/   ← authored knowledge pages
+claude-code/
+├── raw/          ← source material (immutable)
+├── wiki/         ← authored pages
+├── index.md      ← page index
+├── log.md        ← append-only operation log
+└── CLAUDE.md     ← wiki operating manual
 ```
 
 ## Contributing
 
-1. Fork this repo on GitHub
-2. Add sources to `raw/` and pages to `wiki/`
-3. Open a pull request — CI checks for duplicate sources automatically
-4. The maintainer reviews and merges
+1. Fork this repo
+2. Add your source file to `raw/` and create wiki pages
+3. Open a pull request — CI checks for duplicate source filenames automatically
+
+## Setting up your own wiki
+
+Use [vault-init](https://github.com/aleburrascano/vault-init):
+
+```bash
+npm install -g @aleburrascano/vault-init
+vault-init my-wiki-name
+```
