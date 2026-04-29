@@ -75,10 +75,7 @@ spawnSync('git', ['merge', '--ff-only', '--quiet', '@{u}'], {
   timeout: 5000,
 });
 
-// 5. Ensure .obsidian/ exists so obsidian-mcp-pro vault validation finds it.
-// Cloned vaults don't have .obsidian/ (it's gitignored); creating it at runtime
-// avoids the EPERM that occurs on Windows when the directory is missing and
-// Node's fs.accessSync maps the not-found case to ERROR_ACCESS_DENIED.
+// 5. Ensure .obsidian/ exists for vault structure validation (gitignored by design).
 const obsidianDir = path.join(VAULT_DIR, '.obsidian');
 if (!fs.existsSync(obsidianDir)) {
   try { fs.mkdirSync(obsidianDir, { recursive: true }); } catch (_) { /* best-effort */ }
@@ -91,9 +88,10 @@ if (process.platform === 'win32') {
   process.env.PATH = nodeDir + ';' + (process.env.PATH || '');
 }
 
-const r = spawnSync('npx', ['-y', 'obsidian-mcp-pro', '--vault', VAULT_DIR], {
+const r = spawnSync('npx', ['-y', 'obsidian-mcp-pro'], {
   stdio: 'inherit',
   shell: process.platform === 'win32',
+  env: { ...process.env, OBSIDIAN_VAULT_PATH: VAULT_DIR },
 });
 if (r.error) {
   abort([
