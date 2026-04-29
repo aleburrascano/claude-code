@@ -147,8 +147,25 @@ The framework: a domain specialist subagent is essentially a *lens* — same mod
 - Not [[Plugins]] — plugins may *include* subagents, but the primitive is the agent definition.
 - Not multi-process orchestration — they're sequential or parallel within one Claude Code session.
 
+## Cross-agent handoff (Claude Code ↔ Codex / external agents)
+
+Subagents are the canonical *intra-session* delegation primitive, but some workflows need handoff *across* agents and even across products (Claude Code → Codex → back to Claude Code on the same task). [[claude-code-tools (Prasad Chalasani)]] solves this: session continuity + cross-agent message passing + Rust/Tantivy search across session histories. The subagent abstraction generalizes — same brief-driven hand-off, different runtime.
+
+For [[Token Efficiency]]: cross-agent handoff is also a session-continuity strategy. Instead of recompacting at 150k tokens (per [[Anthropic Compaction]]) or starting fresh, hand off the work + context summary to a sibling agent that picks up cleanly.
+
+## Cross-subagent task coordination via Tasks (file-system store)
+
+For coordinating work *between* multiple subagents on a long project, [[Thariq - Tasks Tool (Todos to Tasks)|the Tasks primitive]] (Jan 2026, replacing TodoWrite) is the canonical mechanism:
+
+- **File-system store** at `~/.claude/tasks/` — tasks live on disk, not in any single conversation
+- **Dependencies + blockers** as first-class metadata
+- **Cross-session broadcast**: when one session updates a Task, all other sessions on the same Task List are notified
+- **Shared task lists** via `CLAUDE_CODE_TASK_LIST_ID=<id> claude` — works with `claude -p` headless mode and Agent SDK
+
+Pattern: spawn N parallel subagents, all sharing a Task List. As one finishes a task, dependents unblock. No central coordinator needed; the file-system store + broadcast is the coordinator.
+
 ## Cross-references
 
 - [[When to Delegate to Subagents]] — synthesis page with the decision framework
 - [[Skills]] · [[Hooks]] · [[Plugins]] · [[Slash Commands]]
-- Sources: [[claudekit (Carl Rannaberg)]] (20+ subagents) · [[Superpowers (obra)]] (subagent-driven-development) · [[Context Engineering Kit (NeoLabHQ)]] (SADD) · [[Learn Claude Code (shareAI-lab)]] (architectural rationale) · [[Claude Code System Prompts (Piebald)]] (delegation prompt)
+- Sources: [[claudekit (Carl Rannaberg)]] (20+ subagents) · [[Superpowers (obra)]] (subagent-driven-development) · [[Context Engineering Kit (NeoLabHQ)]] (SADD) · [[Learn Claude Code (shareAI-lab)]] (architectural rationale) · [[Claude Code System Prompts (Piebald)]] (delegation prompt) · [[claude-code-tools (Prasad Chalasani)]] (cross-agent handoff CC↔Codex + session continuity)

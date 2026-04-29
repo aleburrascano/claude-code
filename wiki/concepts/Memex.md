@@ -24,5 +24,6 @@ The web largely went a different direction — public, link-rich but unmaintaine
 
 Maintaining the trails — the associative links — is constant work. Bush implicitly assumed the user would do it. In practice, humans abandon personal knowledge bases because the maintenance burden grows faster than the perceived value. This is the gap [[Second Brain]] (as implemented in [[LLM Wiki Idea]]) attempts to close: the LLM absorbs the bookkeeping cost so the trails stay current.
 
-> [!question] Unverified
-> The "As We May Think" essay was published in *The Atlantic Monthly*, July 1945 — worth confirming the issue/page details from a primary source if precise citation is ever needed.
+## Citation
+
+Bush, Vannevar. "As We May Think." *The Atlantic Monthly*, vol. 176, no. 1, July 1945, pp. 101–108. (An abridged version was republished in *Life* magazine on September 10, 1945.)

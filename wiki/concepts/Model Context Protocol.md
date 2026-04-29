@@ -103,9 +103,17 @@ Each connected MCP server's tool descriptions are part of the system prompt. Man
 
 [[CodeBurn (AgentSeal)|CodeBurn]]'s `optimize` adds the feedback half: it detects **unused MCP servers** ("still paying their tool-schema overhead every session") and quantifies the cost. Without measurement, MCP-server install-and-forget is the default.
 
+### Tool Search: the structural fix at scale
+
+When even disciplined per-server enabling isn't enough — multi-server setups (GitHub + Slack + Sentry + Grafana + Splunk) routinely consume **~55k tokens** in tool definitions before any work begins, and tool selection accuracy degrades past 30-50 tools — Anthropic ships [[Anthropic Tool Search]] as the structural fix.
+
+Mark MCP tools with `defer_loading: true`; they live in the catalog (up to 10k tools) but **never enter the system-prompt prefix**. Claude searches via `tool_search_tool_regex_20251119` or `tool_search_tool_bm25_20251119` and discovers 3-5 relevant tools per request. The cached prefix stays untouched.
+
+This is the productized form of [[Thariq - Prompt Caching Is Everything|Thariq's `defer_loading` mechanism]] — exactly how Claude Code's `mcp_toolset` configuration works internally. Combine with [[Boris Cherny Tips Compendium|Boris's <80 active tools rule]] (operational) for the full discipline: tool search makes the catalog scalable; the rule keeps any single request lean.
+
 ## Cross-references
 
 - [[Claude Code]] · [[Hooks]] · [[Skills]] · [[Plugins]]
 - [[Token Efficiency]] · [[Context Engineering]]
-- Sources: [[Claude HowTo (luongnv89)]] (config examples) · [[Claude Code System Prompts (Piebald)]] (Claude's MCP-related instructions) · [[Awesome Claude Code (hesreallyhim)]] (MCP server catalog) · [[GitNexus (abhigyanpatwari)]] (16 tools + 7 resources + 2 prompts reference) · [[graphify (safishamsi)]] (multimodal MCP) · [[CodeBurn (AgentSeal)]] (unused-MCP detection)
+- Sources: [[Claude HowTo (luongnv89)]] (config examples) · [[Claude Code System Prompts (Piebald)]] (Claude's MCP-related instructions) · [[Awesome Claude Code (hesreallyhim)]] (MCP server catalog) · [[GitNexus (abhigyanpatwari)]] (16 tools + 7 resources + 2 prompts reference) · [[graphify (safishamsi)]] (multimodal MCP) · [[CodeBurn (AgentSeal)]] (unused-MCP detection) · [[Anthropic Tool Search]] (structural fix for tool catalogs at scale)
 - External: [Model Context Protocol Specification](https://modelcontextprotocol.io)

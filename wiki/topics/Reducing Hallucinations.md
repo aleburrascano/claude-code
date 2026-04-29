@@ -28,7 +28,7 @@ Install before doing anything else.
 ### 2. [[Test-Driven Development with Claude|TDD]] — the verification layer
 The single most reliable structural defense in the wiki's coverage. A failing test is **objective ground truth**; the agent can iterate against it without human intermediation. Karpathy's "Goal-Driven Execution" principle is operationalized here.
 
-Implementations: [[Matt Pocock Skills|`mattpocock/skills/tdd`]], [[Superpowers (obra)|test-driven-development]], [[Awesome Claude Code (hesreallyhim)|TDD Guard]] (hook-enforced), [[claudekit (Carl Rannaberg)|test-changed hook]].
+Implementations: [[Matt Pocock Skills|`mattpocock/skills/tdd`]], [[Superpowers (obra)|test-driven-development]], [[TDD Guard (Nizar Selander)]] (hook-enforced), [[claudekit (Carl Rannaberg)|test-changed hook]].
 
 ### 3. [[Spec-Driven Development]] — the alignment layer
 Wrong implementation of right intent vs. right implementation of wrong intent — both are hallucination at different layers. SDD addresses the second. The spec is the testable artifact; the implementation is judged against it.
@@ -40,7 +40,7 @@ Hallucinations that *can't reach the codebase* don't matter. Examples:
 - [[claudekit (Carl Rannaberg)|check-any-changed]] — blocks TypeScript `any` (a common hallucination shortcut)
 - [[claudekit (Carl Rannaberg)|file-guard]] — blocks sensitive file access
 - [[Matt Pocock Skills|git-guardrails]] — blocks dangerous git commands
-- [[Awesome Claude Code (hesreallyhim)|TDD Guard]] — blocks file writes that violate TDD order
+- [[TDD Guard (Nizar Selander)]] — blocks file writes that violate TDD order
 
 The pattern: don't *hope* Claude won't do X; *prevent* Claude from doing X.
 
@@ -104,6 +104,21 @@ Why this is a hallucination defense:
 
 Use it as the **post-hoc feedback loop** for layers 1–14. If you adopted TDD + Karpathy + claudekit and your one-shot rate didn't improve, the defenses aren't actually catching what you thought they were.
 
+### 17. Prompt-injection defense at the boundary ([[parry-guard (Dmytro Onypko)]])
+
+When agents read external content (web pages, third-party docs, user input from untrusted sources), prompt injection becomes a hallucination vector — the agent "hallucinates" instructions because something in its context window *told it to*. parry-guard is a hook-based scanner with **6 detection layers** (encoded payloads, instruction overrides, role hijacks, tool-use exfiltration patterns, etc.) that fires on context-entry tools.
+
+Complement to [[Auto Mode]] (defense #12) — Auto Mode classifier catches scope escalation in the agent's *output*; parry-guard catches injection attempts in the agent's *input*. Use both for production deployments where untrusted content reaches the agent.
+
+### 18. AIDEV-* anchor comments + sacred-tests rule ([[Diwank Field Notes]])
+
+Two production-tested patterns from the Julep team:
+
+- **AIDEV-* anchor comments** — strategically placed comments (`// AIDEV-NOTE: ...`, `// AIDEV-DECISION: ...`, `// AIDEV-WARNING: ...`) that survive editing and act as durable context Claude reads on every relevant edit. Hallucinations about why a line exists are pre-empted by the line *explaining itself*.
+- **Sacred-tests rule** — designate certain tests as un-rewriteable. Claude is instructed to make the implementation match the test, never the reverse. Catches the most insidious hallucination: "this test was wrong, I fixed it" (where the test was actually correct and the fix is the bug).
+
+Both are cheap to adopt (CLAUDE.md text changes), pay out on long-running codebases, and work alongside layers 1-17 rather than competing with them.
+
 ---
 
 ## Patterns from the deep-dives
@@ -123,6 +138,8 @@ Generate multiple candidate paths; prune unpromising branches. Reduces premature
 ---
 
 ## Specific Karpathy-named failure modes (with antidotes)
+
+Sourced from [[Karpathy LLM Coding Notes (Dec 2025)]] — Karpathy's framing matters because **mistakes are now conceptual, not syntactic**: "they are subtle conceptual errors that a slightly sloppy, hasty junior dev might do." Defenses must operate at the conceptual layer; syntax-checkers don't catch wrong-assumption-silently-acted-upon.
 
 | Failure mode | Antidote |
 |---|---|
@@ -163,4 +180,4 @@ These three layer well. Karpathy gives discipline; TDD gives verification; claud
 - [[Karpathy Coding Principles]] · [[Test-Driven Development with Claude]] · [[Spec-Driven Development]] · [[Compound Engineering]]
 - [[Hooks]] · [[Subagents]] · [[Extended Thinking]] · [[Planning Mode]]
 - [[Context Engineering]] (related but distinct — context vs verification)
-- Sources: [[Andrej Karpathy Skills (forrestchang)]] · [[Superpowers (obra)]] · [[claudekit (Carl Rannaberg)]] · [[Compound Engineering Plugin]] · [[Context Engineering Kit (NeoLabHQ)]] · [[Encyclopedia of Agentic Coding Patterns]] · [[Awesome Claude Code (hesreallyhim)]] (TDD Guard, /common-ground) · [[graphify (safishamsi)]] (calibrated-confidence tagging) · [[GitNexus (abhigyanpatwari)]] (confidence-scored impact + LLM-on-its-own-codebase guardrails) · [[CodeBurn (AgentSeal)]] (one-shot-rate metric)
+- Sources: [[Andrej Karpathy Skills (forrestchang)]] · [[Karpathy LLM Coding Notes (Dec 2025)]] (the original failure-mode taxonomy) · [[Superpowers (obra)]] · [[claudekit (Carl Rannaberg)]] · [[Compound Engineering Plugin]] · [[Context Engineering Kit (NeoLabHQ)]] · [[Encyclopedia of Agentic Coding Patterns]] · [[TDD Guard (Nizar Selander)]] (hook-enforced TDD) · [[Awesome Claude Code (hesreallyhim)]] (/common-ground) · [[graphify (safishamsi)]] (calibrated-confidence tagging) · [[GitNexus (abhigyanpatwari)]] (confidence-scored impact + LLM-on-its-own-codebase guardrails) · [[CodeBurn (AgentSeal)]] (one-shot-rate metric) · [[parry-guard (Dmytro Onypko)]] (prompt-injection defense) · [[Diwank Field Notes]] (AIDEV anchor comments + sacred-tests)

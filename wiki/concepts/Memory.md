@@ -269,6 +269,27 @@ Tag Claude on PRs to update CLAUDE.md during code review. Institutional memory a
 ### Multi-CLAUDE.md for monorepos ([[shanraisshan Claude Code Best Practice]])
 Ancestor + descendant loading. Top-level CLAUDE.md for org-wide, subdirectory CLAUDE.md for module-specific.
 
+### CLAUDE.md as constitution ([[Diwank Field Notes]])
+The Julep team's framing: CLAUDE.md is the **project's constitution**, not a tip-jar of preferences. Implications: every line is load-bearing (don't pad); contradictions matter (lint regularly); the document is amendment-friendly (review like code). Pairs with the AIDEV-* anchor comments pattern — durable in-code annotations that survive editing, so the constitution doesn't have to encode every detail. See [[Diwank Field Notes]] for the full pattern + the sacred-tests rule.
+
+### Karpathy's "CLAUDE.md alone is insufficient" warning ([[Karpathy LLM Coding Notes (Dec 2025)]])
+> "All of this happens despite a few simple attempts to fix it via instructions in CLAUDE.md."
+
+Memory is necessary but not sufficient. Karpathy's observation justifies the **stack-of-defenses** thinking in [[Reducing Hallucinations]] — CLAUDE.md is layer 1; TDD, hooks, classifiers add the rest. Don't expect any single layer to do all the work.
+
+### `~/.claude/tasks/` — the second file-system-resident state store
+
+Per [[Thariq - Tasks Tool (Todos to Tasks)]] (Jan 2026), Claude Code has a *second* file-system state store alongside Auto Memory:
+
+| Path | Contents | Lifecycle |
+|---|---|---|
+| `~/.claude/projects/<project>/memory/` | Auto Memory (Claude's notes; first 200 lines / 25KB loaded each session) | Persistent across sessions for this project |
+| `~/.claude/tasks/` | Tasks (work items + dependencies + blockers) | Persistent; cross-session broadcast on update |
+
+Together: **Auto Memory carries facts; Tasks carries work**. Both are file-system-resident, both survive session boundaries, both are scriptable from outside Claude. The `~/.claude/` directory is now the canonical surface for "things Claude shares across sessions."
+
+For multi-subagent coordination on the same Task List, set `CLAUDE_CODE_TASK_LIST_ID=<id>` — works with `claude -p` headless and the Agent SDK.
+
 ## Cross-references
 
 - [[Skills]] (when to use over memory)
@@ -277,4 +298,4 @@ Ancestor + descendant loading. Top-level CLAUDE.md for org-wide, subdirectory CL
 - [[Context Engineering]] (where memory fits in the broader discipline)
 - [[Token Efficiency]] (200-line discipline + lazy `paths:` rules)
 - [[CLAUDE]] (this wiki's own memory file)
-- Sources: [[Thariq Anthropic Skills + Sessions]] · [[Boris Cherny Tips Compendium]] · [[Andrej Karpathy Skills (forrestchang)]] · [[Claude Code System Prompts (Piebald)]] · [[Claude Code Tips (ykdojo)]] · [[claude-mem (thedotmack)]] · [Anthropic Memory docs](https://code.claude.com/docs/en/memory) · [Anthropic Best Practices](https://code.claude.com/docs/en/best-practices)
+- Sources: [[Thariq Anthropic Skills + Sessions]] · [[Boris Cherny Tips Compendium]] · [[Andrej Karpathy Skills (forrestchang)]] · [[Karpathy LLM Coding Notes (Dec 2025)]] (CLAUDE.md alone insufficient warning) · [[Claude Code System Prompts (Piebald)]] · [[Claude Code Tips (ykdojo)]] · [[claude-mem (thedotmack)]] · [[Diwank Field Notes]] (constitution framing + AIDEV anchor comments) · [[HumanLayer]] (60-line CLAUDE.md exemplar) · [Anthropic Memory docs](https://code.claude.com/docs/en/memory) · [Anthropic Best Practices](https://code.claude.com/docs/en/best-practices)

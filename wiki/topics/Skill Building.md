@@ -210,4 +210,4 @@ If you're starting:
 
 - [[Skills]] (the primitive) · [[Hooks]] (for activation) · [[Plugins]] (for distribution)
 - [[Context Engineering]] · [[Token Efficiency]]
-- Sources: [[Matt Pocock Skills]] · [[Superpowers (obra)]] · [[TACHES Claude Code Resources]] · [[Claude Code Infrastructure Showcase (diet103)]] · [[Learn Claude Code (shareAI-lab)]] · [[claudekit (Carl Rannaberg)]] · [[Context Engineering Kit (NeoLabHQ)]]
+- Sources: [[Matt Pocock Skills]] · [[Superpowers (obra)]] · [[TACHES Claude Code Resources]] · [[Claude Code Infrastructure Showcase (diet103)]] · [[Learn Claude Code (shareAI-lab)]] · [[claudekit (Carl Rannaberg)]] · [[Context Engineering Kit (NeoLabHQ)]] · [[Simone (Helmi)]] (artifact-generation skill ecosystem; legacy + MCP variants — pairs with [[Output Styles]] for artifact styling) · [[graphify (safishamsi)]] (canonical 15-platform-portable skill)

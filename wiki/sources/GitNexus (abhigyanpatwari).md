@@ -91,8 +91,17 @@ Docker images dual-published to GHCR + Docker Hub from the same build (identical
 
 ## Open questions
 
-> [!question] Cost of LadybugDB transition
-> LadybugDB was formerly KuzuDB. Vector support inside the embedded DB is the bet — but it requires explicit `--embeddings` flag and silent loss on subsequent runs without it (RUNBOOK.md flags this). Operational sharp edge.
+## Embedding-loss recovery (LadybugDB sharp edge)
+
+LadybugDB was formerly KuzuDB. Vector support inside the embedded DB is the bet — but it requires the explicit `--embeddings` flag, and **silent loss on subsequent runs without it** is the operational sharp edge (RUNBOOK.md flags this).
+
+**Detection**: check `.gitnexus/meta.json` — `stats.embeddings: 0` indicates absent vectors. Or run `npx gitnexus status` to inspect.
+
+**Recovery**: run `npx gitnexus analyze --embeddings` from the target repo root. Re-runs the embedding phase against the existing graph; full reindex not required.
+
+**Discipline rule**: if you ever pass `--embeddings` once, **always pass it on subsequent `analyze` runs** for that repo. Or alias the command. The CLI doesn't remember the flag from prior invocations.
+
+For very large repos, the runbook notes the CLI may "skip or limit embedding work when node counts are very high" — monitor output during processing.
 
 > [!question] Process detection across languages
 > Process detection works "from entry points through call chains" but the entry-point heuristics differ per language (the matrix shows ✓ for all 14, but the heuristic quality probably varies). Worth checking on a real polyglot repo.

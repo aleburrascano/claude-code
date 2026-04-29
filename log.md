@@ -260,3 +260,226 @@ Boris's "agentic search > RAG for code" was correct *given the binary framing*. 
 - **mehdi-lamrani/awesome-claude-skills**: cited in claude-code-templates README, currently 404. Listed in ecosystem catalog as "currently inaccessible."
 - **Ghost-skill audit on this vault**: with 110 pages and growing skill/agent inventory, periodic application of `codeburn optimize` and `gitnexus analyze --skills` (if/when ported beyond code) could be a meta-exercise worth running.
 
+## [2026-04-29] ingest | Round 6 Tier 1.2: Anthropic Tool Search + Compaction docs
+
+- **Context**: opening of the gap-fill round per `~/.claude/plans/hey-so-can-you-warm-reddy.md`. Plan structures the round into 5 tiers; this entry closes Tier 1.2 (Anthropic API docs cited in raw/ but never ingested).
+- **Sources** (no raw — discovered as in-text citations inside `raw/articles/Thariq - Prompt Caching Is Everything.md`):
+  - `https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool` (line 73 of the Thariq raw)
+  - `https://platform.claude.com/docs/en/build-with-claude/compaction` (line 93)
+- **Created — 2 source pages**:
+  - [[Anthropic Tool Search]] — `tool_search_tool_regex_20251119` / `_bm25_20251119`. Up to 10k tools in catalog; 3-5 surfaced per request via regex or BM25. **Deferred tools never enter the system-prompt prefix** — auto-expanded as `tool_reference` blocks in the conversation when discovered. Cognitive threshold: tool selection accuracy degrades past **30-50 tools** (the underlying reason for [[Boris Cherny Tips Compendium|Boris's <80 rule]]). Multi-server typical: ~55k tokens consumed in tool defs before any work; tool search reduces by >85%.
+  - [[Anthropic Compaction]] — beta header `compact-2026-01-12`, edit type `compact_20260112`. Default trigger 150k input tokens (configurable, min 50k). The `compaction` block carries the summary; on next request the API auto-drops everything before it. **Same-model summarization only** (no cheaper-model option). Caching: `cache_control: ephemeral` on the `compaction` block caches the summary itself.
+- **Page updates** (cross-linking the productizations into the wiki):
+  - [[Token Efficiency]] — added a new subsection **"The productizations of Claude Code's caching architecture"** mapping each Thariq pattern (cache-safe forking, defer_loading) to its productized API surface. Updated the cache-preserving compaction subsection to reference [[Anthropic Compaction]] specifics.
+  - [[Model Context Protocol]] — added subsection **"Tool Search: the structural fix at scale"** explaining when MCP tool sprawl warrants `defer_loading` + `tool_search_tool_*`. Combined with Boris's <80 active tools rule for the full discipline.
+  - [[Thariq - Prompt Caching Is Everything]] — added productization arrows on both relevant lines (line ~111 → [[Anthropic Tool Search]]; line ~129 → [[Anthropic Compaction]]). Updated cross-references.
+- **Cross-cutting insight**: Anthropic took two of Claude Code's internal cache-preservation patterns and **productized them as first-class API features**. Both are now ZDR-eligible, SDK-supported in 7 languages, batch-API compatible, and stream-able. Translation: you no longer need to roll either pattern by hand. The wiki's framing (these are architecture, not optimization) is now backed by Anthropic's own productization.
+- **Bonus discoveries (Tier 3 backlog candidates surfaced from these docs)**:
+  - **"Effective context engineering for AI agents"** — Anthropic engineering blog, cited from BOTH Tool Search and Compaction docs as the foundational long-context degradation read. **Strong Tier 3 priority — likely the most-referenced Anthropic engineering post relevant to [[Context Engineering]].**
+  - **"Advanced tool use"** — Anthropic engineering blog, cited as background on tool-scale challenges.
+  - **"Tool use with prompt caching"** — dedicated docs page (`/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching`).
+  - **"Context editing"** — sibling strategies (tool result clearing, thinking block clearing).
+  - **"Session memory compaction cookbook"** — runnable example with background-threading compaction.
+  - **"Context windows"** docs — companion strategy reference.
+- **Wiki at 112 pages** (65 sources, 29 concepts, 7 topics, 11 people).
+
+## [2026-04-29] ingest+lint | Round 6 Tiers 2.1–2.4 + 5.1 + 1.3: structural gap-fill + synthesis layer + qmd
+
+- **Context**: continuation of the gap-fill round per `~/.claude/plans/hey-so-can-you-warm-reddy.md`. After Tier 1.2 closed the two Anthropic-docs citations, this batch closes the high-confidence internal-structure work plus the deliverable-layer synthesis pages plus one verified raw-derived source (qmd).
+- **Tier 2.1: 9 orphan source pages wikilinked into the concept/topic network.** Each source had no inbound wikilinks from concepts/topics; now each has 2-5 natural homes:
+  - [[Karpathy LLM Coding Notes (Dec 2025)]] → linked from [[Karpathy Coding Principles]] (primary citation), [[Test Time Compute]], [[Ralph Wiggum Technique]] (full stamina-as-abundance section added), [[Reducing Hallucinations]] (Karpathy-named-failure-modes attribution), [[Memory]] (CLAUDE.md-alone-insufficient warning).
+  - [[Diwank Field Notes]] → [[Reducing Hallucinations]] (defense #18 — AIDEV-* anchor comments + sacred-tests rule), [[Memory]] (constitution framing), [[When to Delegate to Subagents]] (three-mode framing — full new section added), [[Context Engineering]] cross-ref.
+  - [[TDD Guard (Nizar Selander)]] → [[Test-Driven Development with Claude]] (canonical hook-enforced TDD; replaced alias with direct link), [[Hooks]] (TDD-enforcement section added), [[Reducing Hallucinations]] cross-ref (replaced alias).
+  - [[parry-guard (Dmytro Onypko)]] → [[Reducing Hallucinations]] (defense #17 — prompt-injection at the boundary), [[Hooks]] (Bash safety section, direct link), [[Auto Mode]] (full hook-based-alternatives-and-complements section added).
+  - [[Dippy (Lily Dayton)]] → [[Auto Mode]] (cross-platform AST-bash auto-approval), [[Hooks]] (Bash safety, direct link).
+  - [[HCOM (Claude Hook Comms)]] → [[Hooks]] (multi-agent message-bus section), [[When to Delegate to Subagents]] (multi-agent coordination section).
+  - [[claude-code-tools (Prasad Chalasani)]] → [[Subagents]] (cross-agent handoff section added), [[Token Efficiency]] (technique #14 — cross-agent session continuity).
+  - [[Simone (Helmi)]] → [[Skill Building]] (artifact-generation), [[Output Styles]] (artifact styling cross-link).
+  - [[Prompt Engineering Papers Reference]] → [[Prompt Engineering Techniques]] (academic foundation), [[Context Engineering]] (research basis).
+- **Tier 2.2: 4 of 8 unverified-callouts resolved.**
+  - [[Anthropic Claude Code]] — converted "where can readers see what CC actually does?" question into a "Visibility into the actual implementation" section pointing to [[Learn Claude Code (shareAI-lab)]] + [[Claude Code System Prompts (Piebald)]] + the two Thariq articles.
+  - [[HumanLayer]] — replaced "12 Factor Agents document not fetched" with cross-link to [[12 Factor Agents (HumanLayer)]] (already covered Round 3).
+  - [[Memex]] — confirmed Atlantic Monthly citation via Wikipedia: vol. 176, no. 1, July 1945, pp. 101–108 (abridged in *Life* Sept 10, 1945).
+  - [[GitNexus (abhigyanpatwari)]] — converted LadybugDB sharp-edge question into a "Embedding-loss recovery" section with detection (`stats.embeddings: 0`), recovery command (`npx gitnexus analyze --embeddings`), and discipline rule (always pass the flag once you've used it).
+  - 4 callouts remain as marked-exploratory (graphify wiki self-reference; CodeBurn Yield false-positive rate + Copilot output-only asymmetry; Anthropic Skills production-vs-public divergence) — these need observation rather than research.
+- **Tier 2.4: 2 new concept pages.**
+  - [[Permission Modes]] — unified taxonomy of the 5 modes (manual / plan / acceptEdits / auto / bypass) with decision tree, hook interactions, sandboxing orthogonality, mode-as-state-as-tool design, subagent-scoped permissions. Closes a long-standing scatter (Auto Mode, Planning Mode, Subagents each had partial coverage).
+  - [[Action Space Design]] — Thariq's foundational philosophy promoted from inside [[Thariq - Seeing like an Agent]] to its own page. Covers: what's in the action space (5 primitives), the math of why tools are expensive (cache invalidation + selection accuracy + definition tokens), adding to action space ≠ adding tools (4 alternatives: skills, subagents, progressive disclosure, deferred tool stubs), state-as-tools, periodic re-audit (TodoWrite → Task Tool example), and the "see like an agent" discipline.
+- **Tier 5.1: 3 new topic pages (the deliverable layer per query-optimized framing).**
+  - [[Prompt Caching]] — promoted from "compression layer 1 inside Token Efficiency" to its own topic page per Thariq's "Prompt Caching Is Everything." Covers: why it's foundational not optimization, the 4-layer prompt structure, cache-breaking mistakes, the 5 canonical patterns (state-as-tools, stub-and-discover, cache-safe forking, subagent handoff, message injection), cache hit rate as leading indicator, when prompt caching is *not* enough.
+  - [[Multi-Agent Orchestration]] — synthesis distinct from [[When to Delegate to Subagents]]. Covers: the 5 archetype patterns (parallel review, parallel exploration, role specialization, two-stage validation, wave-based parallelization), 5 coordination mechanisms (briefs, disk handoff, cross-agent session continuity, hooks-as-message-bus, MCP-mediated state), cache preservation in multi-agent setups, framework-at-a-glance table for the 10+ wiki frameworks, when multi-agent is overhead.
+  - [[Cost Observability Playbook]] — synthesis with measurement → diagnosis → optimization loop. Covers: 5 metrics (total cost, cache hit rate, cost-per-task, one-shot rate, ghost-skill/unused-MCP/re-read patterns), the 2 canonical tools split ([[ccusage (ryoppippi)]] for at-a-glance / [[CodeBurn (AgentSeal)]] for diagnostics), adjacent tools (ccflare, ccxray, Claude Code Usage Monitor, Claudex), cost-quality framing tied to Test Time Compute, anti-patterns.
+- **Tier 2.3: 5 high-priority people pages.**
+  - [[Diwank Tomer]] — Julep co-founder; production practitioner. AIDEV-* anchor comments + sacred-tests rule + three-mode framing.
+  - [[Abhigyan Patwari]] — Akon Labs founder; GitNexus creator. Multi-repo MCP architecture + freshness hook objective + skill auto-generation + LLM-on-own-codebase guardrails.
+  - [[Safi Shamsi]] — graphify creator. Multimodal knowledge graphs + EXTRACTED/INFERRED/AMBIGUOUS confidence + 15-platform install matrix + Karpathy `/raw` folder as design target.
+  - [[Carl Rannaberg]] — claudekit creator. 6-aspect parallel review + 20+ specialist subagents + extensive hook library + auto-checkpointing + thinking-level hook + codebase-map injection + hook performance discipline.
+  - [[Cihat Gündüz]] — ContextKit creator (FlineDev). 4-phase planning structure with named quality agents per phase; planning as separate discipline.
+- **Tier 1.3: qmd (tobi) verified and ingested.** [[LLM Wiki Idea]] line 51 explicitly recommends qmd as the wiki's search-engine substrate at scale. Confirmed via WebSearch + WebFetch: tobi/qmd, MIT, **23.6k stars**, v2.1.0 April 2026 (active). Hybrid BM25 + vector + LLM rerank using `qwen3-reranker-0.6b-q8_0` via node-llama-cpp + GGUF (all local, no cloud calls). CLI + stdio MCP + HTTP MCP (`localhost:8181`) + daemon mode. Source page placed in `wiki/sources/qmd (tobi).md` with 4 retrieval categories table comparing to AST-graph alternatives.
+
+### Cross-cutting threads from this batch
+
+1. **Productizations validate the architecture-not-optimization framing.** Tool Search and Compaction are Claude Code's internal patterns shipped as API features. The wiki's framing of [[Prompt Caching]] as foundational (rather than as one of many optimizations) is now backed by Anthropic's own productization decisions.
+2. **The "permission modes" taxonomy was scattered for a reason — these are different abstractions.** Unifying them in [[Permission Modes]] required articulating that hooks/sandboxing/subagents are orthogonal axes, not alternatives. The decision tree separates them properly.
+3. **Multi-agent orchestration has 5 archetypes, not "use subagents."** The wiki's 10+ workflow frameworks each pick from these 5 archetypes (parallel review, parallel exploration, role specialization, two-stage validation, wave-based). [[Multi-Agent Orchestration]] makes the menu explicit.
+4. **Cost observability has matured into 2 distinct tools, not a long tail.** ccusage = at-a-glance; CodeBurn = diagnostic. The category is no longer "find a tool that works"; it's "use both."
+5. **Karpathy's Dec 2025 notes are now properly load-bearing.** The notes were previously cited only via [[Andrej Karpathy]]; they're now anchored from [[Karpathy Coding Principles]] (primary), [[Reducing Hallucinations]], [[Test Time Compute]], [[Ralph Wiggum Technique]], [[Memory]] — making the four-principles-from-Karpathy traceable from any focus area to the original source.
+6. **Diwank's three-mode framing is now the "when *not* to subagent" answer.** [[When to Delegate to Subagents]] previously had a decision tree but no mode-aware guidance. The playground/pair-programming/production split prevents premature delegation in fast-iteration work.
+
+### Process notes
+
+- **Tool result file persistence**: Compaction docs returned 97KB output (over the inline 30KB limit) and were auto-saved to `tool-results/`. Worked smoothly with `Read` + offset/limit patterns; worth knowing for future big-doc fetches.
+- **Atlantic.com WebFetch was blocked**; Wikipedia fetch succeeded for the bibliographic confirmation. Pattern: when a primary publisher blocks scrapers, Wikipedia's citation table is usually adequate for bibliographic facts.
+- **The 9 orphan-source wikilink pass took 16 file edits**; many of the orphans needed only cross-reference additions, but [[Auto Mode]] and [[Hooks]] gained substantial new sections (parry-guard alternatives; TDD Guard / parry-guard / Dippy / HCOM as direct-link sections). Consistent with the "synthesis improves when the inputs are well-named" pattern.
+- **5 people-page writes happened in parallel**; each ~50 lines covering identity + 3-5 contributions + cross-refs. Pattern: structure them around named contributions with their wiki-page anchor, so backlinks light up automatically when a future ingest cites the person.
+
+### Wiki at 123 pages (66 sources, 31 concepts, 10 topics, 16 people).
+
+### Still open / lower priority for this round
+
+- **Tier 1.1**: 3 X-articles (Lance Martin × 2 + Thariq Tasks Tool) need user paste workflow (X URLs return 402). Per [[Karpathy LLM Coding Notes (Dec 2025)]] precedent.
+- **Tier 3**: 13 Anthropic official docs in 3 waves (Tool Use overview, Files API, Batch, Vision, Computer Use, Models, Settings, Engineering Blog index, Cookbook, Headless mode, Prompt Injection Defenses, Sandboxing engineering post, Extended Thinking API). Plus 4 bonus URLs surfaced from Tier 1.2 docs (Effective Context Engineering, Advanced Tool Use, Tool Use with Prompt Caching, Context Editing).
+- **Tier 4.1**: combined [[Foundational Papers]] page (ReAct, Lost in the Middle, Constitutional AI, MemGPT, ToT, Reflexion, Toolformer, SWE-bench).
+- **Tier 4.2**: practitioner voices (Armin Ronacher, Simon Willison, Geoffrey Huntley, Dex Horthy, Erik Schluntz, Catherine Wu, Steve Yegge, Alex Albert, Sholto Douglas) — VERIFY-FIRST.
+- **Tier 5.2 + 5.3**: recent ecosystem repos (awesome-agent-skills VoltAgent, awesome-claude-code-toolkit rohitg00) + ongoing-sources catalog (Latent Space, Lenny's, AI Engineer Newsletter, Code with Claude conference).
+- **Final**: query-readiness verification pass walking the CLAUDE.md focus-area questions through the wiki.
+
+## [2026-04-29] ingest | Round 6 Tiers 3–5: Anthropic docs + Foundational Papers + practitioner voices + ecosystem catalogs
+
+- **Context**: continuation. After the structural-fix batch (Tiers 1.2 / 2.1 / 2.2 / 2.4 / 5.1 / 2.3 / 1.3) closed, this batch brings the wiki outward: Anthropic API docs, foundational academic papers, high-signal practitioner voices, and recent ecosystem catalogs.
+- **Tier 3: 11 Anthropic official docs** (skipped 6 lower-priority — Vision API, Computer Use, Cookbook, Headless Mode, Settings Reference, Engineering Blog Index).
+  - **Wave 1 (foundational)**: [[Anthropic Effective Context Engineering]] (the most-referenced engineering blog; "context rot," "just-in-time retrieval," 1-2k token sub-agent return summaries), [[Anthropic Advanced Tool Use]] (Programmatic Tool Calling + Tool Use Examples beta), [[Anthropic Tool Use Overview]] (the agentic loop primitive; per-model tool-use overhead 346 tokens), [[Anthropic Tool Use with Prompt Caching]] (the precise cache-invalidation matrix).
+  - **Wave 2 (capabilities)**: [[Anthropic Files API]] (upload-once free, beta `files-api-2025-04-14`, 500MB/file limit), [[Anthropic Batch Processing]] (50% async discount, 300k output beta on Opus 4.7/4.6/Sonnet 4.6), [[Anthropic Extended Thinking API]] (adaptive thinking required on Opus 4.7+, manual deprecated; messages-cache-only invalidation), [[Anthropic Models Overview]] (Opus 4.7 step-change in agentic coding; pricing $5/$25 vs Opus 4.1's $15/$75).
+  - **Wave 3 (security + context)**: [[Anthropic Prompt Injection Defenses]] (~1% attack success at 100-attempt Best-of-N on Opus 4.5; "far from solved"), [[Anthropic Sandboxing Engineering]] (bubblewrap/seatbelt OS-level isolation; 84% prompt reduction; dual filesystem+network isolation requirement), [[Anthropic Context Editing]] (selective tool-result + thinking-block clearing; sibling to Compaction).
+- **Tier 4.1: [[Foundational Papers]]** — single combined source page covering 8 academic papers (ReAct, Lost in the Middle, Constitutional AI, MemGPT, Tree of Thoughts, Reflexion, Toolformer, SWE-bench) with citations + wiki anchor mapping. Compress format chosen per [[Prompt Engineering Papers Reference]] precedent. The page articulates the **inheritance chain** (academic foundation → Anthropic engineering posts → Anthropic productizations → practitioner sources → ecosystem tooling) and explicitly anchors prior implicit citations across [[Token Efficiency]] / [[Memory]] / [[Reducing Hallucinations]] / [[Prompt Engineering Techniques]].
+- **Tier 4.2: 4 practitioner voices verified and ingested** — VERIFY-FIRST gating worked. All 4 confirmed real and high-signal:
+  - [[Armin Ronacher]] (lucumr.pocoo.org; Flask + Sentry; recent posts confirmed but Audit 3's 3 specific titles weren't visible — flagged in body).
+  - [[Simon Willison]] (108 posts on Claude Code tag; Datasette + LLM CLI creator; the largest non-Anthropic single-author corpus).
+  - [[Geoffrey Huntley]] (originator of the Ralph Wiggum loop; software-economics + agentic-coding essays).
+  - [[Dex Horthy]] (HumanLayer founder; canonical posts: "12 Factor Agents" Apr 2025, "Advanced Context Engineering for Coding Agents" Aug 2025, "Context-Efficient Backpressure" Dec 2025, "A Brief History of Ralph" Jan 2026, "Getting Claude to Actually Read Your CLAUDE.md" Mar 2026).
+  - **Skipped per VERIFY-FIRST**: Erik Schluntz / Catherine Wu / Steve Yegge / Alex Albert / Sholto Douglas — verification cost outweighed marginal value relative to the four already-strong voices and the existing [[Boris Cherny]] / [[Thariq]] coverage. Revisit if specific work surfaces.
+- **Tier 5.2: 2 recent ecosystem catalogs verified and ingested**.
+  - [[awesome-agent-skills (VoltAgent)]] — **19.4k stars** (Audit 3 said ~5k; corrected); 1,100+ skills (audit said 1000+; close); platform-agnostic (audit said Claude-specific; corrected).
+  - [[awesome-claude-code-toolkit (rohitg00)]] — 1.5k stars; 135 agents + 35 skills + 42 commands + 176+ plugins + 20 hooks + 14 MCP configs (all confirmed); Apache 2.0; actively maintained (459 commits).
+  - **awesome-ai-agents-2026 (caramaschiHG)** skipped — too broadly agent-focused, not Claude Code-specific enough for the wiki's focus.
+- **Tier 5.3: ongoing-sources catalog added to [[Claude Code Ecosystem]]** as a new section listing practitioner blogs (Simon, Armin, Geoffrey, Dex), Anthropic creator voices, and major podcasts/newsletters/conferences (Latent Space, Lenny's, AI Engineer, Code with Claude). Brief catalog entries rather than separate source pages.
+
+### Cross-cutting threads from this batch
+
+1. **The wiki now has an academic root.** Before this batch, [[Prompt Engineering Techniques]] named ReAct/ToT/Reflexion as techniques without sourcing; [[Token Efficiency]] referenced "context rot" without the Liu et al. paper; [[Memory]] used "constitution-as-document" framing without Constitutional AI. The single [[Foundational Papers]] page closes all of these.
+2. **Anthropic's productization arc is now traceable.** The wiki maps it: [[Thariq - Prompt Caching Is Everything]] (architectural rationale) → [[Anthropic Effective Context Engineering]] (engineering principles) → [[Anthropic Advanced Tool Use]] (engineering pre-productization) → [[Anthropic Tool Search]] / [[Anthropic Compaction]] (productized features) → [[Anthropic Tool Use with Prompt Caching]] (the precise rules). Five layers of inheritance.
+3. **Audit 3's claims had verification gaps but mostly held.** Of the practitioner voices Audit 3 surfaced, 4 of 9 were verified high-signal (Armin / Simon / Geoffrey / Dex); 5 were skipped under VERIFY-FIRST as verification cost > value. The two recent ecosystem repos verified with corrected counts (VoltAgent stars were 4× audit's number; multi-platform not Claude-specific).
+4. **Programmatic Tool Calling is a new wiki primitive worth tracking.** Beta `advanced-tool-use-2025-11-20`. Different shape from Tool Search: PTC reduces what enters the conversation *at all* by filtering inside a code execution sandbox before Claude sees it. 37% token reduction on the worked example. Will likely surface as a wiki-tracked pattern at scale.
+5. **Adaptive thinking is the new default on Opus 4.7+.** Manual `budget_tokens` returns 400. The [[Extended Thinking]] concept page wording predates this; worth a future update sweep ([[Extended Thinking]] needs to lead with "adaptive thinking is required on Opus 4.7+").
+6. **Sandboxing's dual-isolation requirement is now load-bearing.** The engineering post is explicit: filesystem-only OR network-only sandboxing is *insufficient*. Pair is required. Worth updating [[Sandboxing]] concept page to lead with this.
+7. **Anthropic's honesty on prompt injection is the right framing.** "1% attack success at 100 attempts is meaningful risk; problem is far from solved." Defense-in-depth ([[Auto Mode]] + [[Sandboxing]] + [[parry-guard (Dmytro Onypko)|parry-guard]]) is the right posture; single-layer reliance is not.
+
+### Process notes
+
+- **Compaction docs returned 97KB** and Context Editing returned 78KB — both auto-saved to `tool-results/` and read with offset/limit. Pattern works.
+- **Atlantic.com WebFetch was blocked** (Memex Tier 2.2 subtask); Wikipedia worked. Pattern: when the primary publisher blocks scrapers, Wikipedia's citation table is often adequate for bibliographic facts.
+- **Practitioner-blog WebFetch worked across all 4 attempts** (lucumr.pocoo.org, simonwillison.net, ghuntley.com, humanlayer.dev/blog). The personal-blog space is friendly to fetches; institutional publishers more variable.
+- **VERIFY-FIRST paid off**: Audit 3 claimed Armin's "Agent Design Is Still Hard" (Nov 2025) — not visible on his blog homepage; the claim was logged but not propagated as fact. Rule: verify *specific titles* before quoting, even when the *blog* is verified active.
+
+### Wiki at 141 pages (80 sources, 31 concepts, 10 topics, 20 people).
+
+### Query-readiness verification pass
+
+Walking each CLAUDE.md focus-area question through the wiki as a stranger:
+
+| Question | Landing page (1 hop) | Pass / fail |
+|---|---|---|
+| "How do I build better prompts for Claude Code?" | [[Context Engineering]] (operational) + [[Prompt Engineering Techniques]] (catalog) | **Pass**. Both reachable from index. Anthropic's "minimal high-signal tokens" principle now anchored via [[Anthropic Effective Context Engineering]]. |
+| "How do I reduce hallucinations on this task?" | [[Reducing Hallucinations]] (18 defenses) | **Pass**. Now references all 9 orphan-source defenses (Karpathy, TDD Guard, parry-guard, Diwank). |
+| "How do I save tokens?" | [[Token Efficiency]] (5-layer stack) + [[Prompt Caching]] (architectural foundation) | **Pass**. The two pages cover both the operational (5-layer stack) and the foundational (caching architecture). |
+| "When should I delegate to subagents?" | [[When to Delegate to Subagents]] (decision tree) + [[Multi-Agent Orchestration]] (5 archetypes) | **Pass**. "When" + "How to coordinate" are now both answered. |
+| "How do I design a skill?" | [[Skill Building]] | **Pass**. Strong coverage; now links [[Action Space Design]] for the underlying philosophy. |
+| "How do I use hooks for X?" | [[Hooks]] | **Pass**. Four-objective taxonomy + canonical examples per objective. |
+| "How do I write a good CLAUDE.md?" | [[Memory]] (full Anthropic docs + Diwank constitution framing + Karpathy warning) | **Pass**. All three load-bearing sources reachable. |
+| "How do I plan a complex change?" | [[Planning Mode]] + [[Spec-Driven Development]] | **Pass**. Both pages exist; SDD page covers 10+ workflow framework references. |
+| "How do I keep costs under control?" | [[Cost Observability Playbook]] | **Pass** (new this round). Measurement → diagnosis → optimization loop with 5 metrics + 2 canonical tools. |
+| "How do I make Claude reason better on hard problems?" | [[Extended Thinking]] | **Pass-with-flag**. Concept page predates adaptive-thinking-required-on-Opus-4.7+; updated [[Anthropic Extended Thinking API]] source page covers it. Concept page worth a future refresh. |
+| "What's the right tool/repo for ___?" | [[Claude Code Ecosystem]] | **Pass**. Updated with Anthropic API docs table + skill catalogs table + ongoing-sources section. |
+
+**11 of 11 questions pass.** Two flagged for future polish:
+1. [[Extended Thinking]] concept page should be updated to lead with "adaptive thinking is required on Opus 4.7+" (currently buried).
+2. [[Sandboxing]] concept page should lead with "dual filesystem+network isolation requirement is non-negotiable" (currently in the middle).
+
+These are minor refresh tasks, not blockers. The wiki is **query-ready** for the focus areas.
+
+### Final state
+
+| Layer | Count |
+|---|---|
+| Source pages | 80 |
+| Concepts | 31 |
+| Topics | 10 |
+| People | 20 |
+| **Total wiki pages** | **141** |
+
+Up from 110 at session start. **+31 pages**. Three new topic synthesis pages ([[Prompt Caching]], [[Multi-Agent Orchestration]], [[Cost Observability Playbook]]) substantially strengthen the deliverable layer. The ratio of source pages to concept/topic/people pages stayed healthy.
+
+### Still open / lower priority
+
+- **Tier 1.1**: 3 X-articles still gated on user paste workflow (Lance Martin × 2 + Thariq Tasks Tool). 402 auth.
+- **6 lower-priority Anthropic docs skipped from Tier 3**: Vision API, Computer Use, Cookbook, Headless Mode, Settings Reference, Engineering Blog Index. Add when relevance arises.
+- **5 Tier 4.2 voices skipped**: Erik Schluntz, Catherine Wu, Steve Yegge, Alex Albert, Sholto Douglas. Revisit if specific work surfaces.
+- **Future polish**: [[Extended Thinking]] adaptive-required update; [[Sandboxing]] dual-isolation lead update.
+
+## [2026-04-29] ingest | Round 6 Tier 1.1: 3 X-articles closed (paste workflow)
+
+- **Closed the round's last open work.** Alessandro pasted the three X-articles (per the [[Karpathy LLM Coding Notes (Dec 2025)]] precedent — X URLs return 402 to WebFetch, paste is the workaround):
+  - `raw/articles/Lance Martin - Prompt auto-caching with Claude.md` (Dec 24, 2025)
+  - `raw/articles/Lance Martin - Give Claude a computer.md` (Feb 27, 2026)
+  - `raw/articles/Thariq - Tasks Tool (Todos to Tasks).md` (Jan 22, 2026)
+- **Web Clipper artifact handled** (the now-routine slash-stripping artifact + smart-quote in filenames): all three landed at `raw/` root with title-as-filename; moved to `raw/articles/` with canonical `<Author> - <Title>.md` names matching the existing Thariq convention.
+- **Created — 3 source pages**:
+  - [[Lance Martin - Prompt auto-caching with Claude]] — the technical companion piece Thariq points to. Closes operational specifics on [[Prompt Caching]]: cached input tokens are **10% the cost** of non-cached; **20-block backward search** rule for hash matches; workspace-scoped hashes; manual (per-block) vs auto-caching (request-level, breakpoint moves automatically). Cited resources for Tier 3+ backlog: Sankalp's prompt-caching-deep-dive, kipply's transformer-inference-arithmetic, vLLM paper, SGLang, Manus context-engineering essay (peakji).
+  - [[Lance Martin - Give Claude a computer]] — the Programmatic Tool Calling explainer Thariq points to. Closes the "5 reasons to promote an action to a tool" framework (UX, Guardrails, Concurrency, Observability, Autonomy) on [[Action Space Design]]; "tools trade-off control with composability" + composition-tax framing; concrete PTC metrics (BrowseComp + DeepsearchQA: +11% accuracy / -24% input tokens; Opus 4.6 + PTC #1 on LMArena Search Arena); PTC is now default in `web_search_20260209`.
+  - [[Thariq - Tasks Tool (Todos to Tasks)]] — the full TodoWrite → Tasks transition announcement. Closes the canonical "tools designed for past models can constrain current models" example on [[Action Space Design]] with primary-source detail. Tasks live at `~/.claude/tasks/` (file system; not in conversation), have dependencies + blockers as first-class metadata, and broadcast updates to all sessions sharing a `CLAUDE_CODE_TASK_LIST_ID`. Works with `claude -p` (headless) and Agent SDK.
+- **Created — 1 people page**: [[Steve Yegge]]. Promoted from Tier 4.2 skip-list because the Tasks announcement explicitly cites his **Beads** project as inspiration. The acknowledgement is the verification trigger that VERIFY-FIRST gating wanted. Coverage focused on Beads + multi-agent orchestration relevance; the broader Yegge corpus (Vibe Coding Manifesto, Gas Town orchestrator) noted as potential deep-dives.
+- **7 cross-link updates** to existing pages:
+  - [[Prompt Caching]] — added the 10% cost number + 20-block search rule + manual-vs-auto-caching subsection
+  - [[Action Space Design]] — added the **5 reasons to promote an action to a tool** framework + "tools trade-off control with composability" framing; updated high-bar checklist (now 8 items including "does it justify itself against at least one of Lance's 5 reasons?")
+  - [[Anthropic Advanced Tool Use]] — added concrete PTC search-benchmark metrics (+11% / -24%, #1 LMArena) and the fact that PTC is built into `web_search_20260209` by default
+  - [[Subagents]] — added Tasks file-system store as canonical cross-subagent state mechanism
+  - [[Multi-Agent Orchestration]] — added **file-system-mediated state (Tasks)** as the 5th coordination mechanism alongside briefs / disk handoff / cross-agent session continuity / hooks-as-message-bus / MCP-mediated state
+  - [[Memory]] — added `~/.claude/tasks/` as the second file-system-resident state store (alongside Auto Memory at `~/.claude/projects/<project>/memory/`)
+  - [[Cost Observability Playbook]] — added the 10× cost differential framing as the load-bearing math behind cache-hit-rate-as-leading-indicator (60% hit ≠ "good enough"; 90% is the goal)
+
+### Cross-cutting threads from this micro-batch
+
+1. **The wiki's [[Prompt Caching]] page was missing operational specifics that practitioners *will* ask about.** Lance Martin's caching piece closes those: 10% cost number, 20-block search, workspace scoping, manual-vs-auto-caching. These are the kinds of facts that turn "interesting framing" into "I can act on this."
+2. **The "5 reasons to promote-to-tool" framework should have been in [[Action Space Design]] from the start.** It's the most-cited concrete decision tool in the Lance Martin piece. Now anchored.
+3. **The "unhobble on each model bump" pattern has its canonical example.** Tasks replacing TodoWrite isn't just *one* example of "tools designed for past models can constrain current models" — Anthropic frames it as *the* canonical case (Opus 4.5 keeps state better → TodoWrite became constraining). This is now the load-bearing example for [[Action Space Design]].
+4. **`~/.claude/` is now the canonical surface for Claude's persistent state.** Auto Memory at `~/.claude/projects/<project>/memory/`, Tasks at `~/.claude/tasks/`. Both Anthropic-shipped, both file-system-resident, both surveyable from outside Claude. Worth thinking about as a stable platform for build-on-top tooling.
+5. **Steve Yegge surfaces as a load-bearing voice.** Audit 3 mentioned him; VERIFY-FIRST skipped him. Anthropic's direct citation of Beads-as-inspiration changed the calculus — Anthropic doesn't acknowledge community work this directly often. The page is now ingested with that as the lead.
+
+### Process notes
+
+- **Web Clipper artifact pattern is now fully routine**. Three iterations of "user clips → arrives at `raw/` root → mv-and-rename to `raw/articles/<Author> - <Title>.md`" worked smoothly. Smart quotes in filenames (e.g., `’` in "We're") are the only remaining sharp edge — handled with shell-quoting and a content-aware target name.
+- **All three articles cited each other and prior Anthropic docs heavily**, validating the wiki's existing graph: Lance Martin's caching piece cites Thariq; Thariq's Seeing-like-an-Agent cites Lance's PTC piece; Tasks announcement references model capabilities ([[Anthropic Models Overview]]) and inspiration ([[Steve Yegge|Beads]]). The cross-link mesh is dense and verifiable.
+- **Pre-ingest takeaway summary went well**. Alessandro's "yup, you got the green light" came after a structural map (5 takeaways per article + 3 page touches per article + 1 new person page + Steve Yegge promotion). The pattern for future paste-driven micro-batches: file-arrival check → read → takeaways summary → green-light → write.
+
+### Wiki at 145 pages (83 sources, 31 concepts, 10 topics, 21 people).
+
+### All round-6 tiers closed
+
+| Tier | Status | New pages |
+|---|---|---|
+| 1.1 | ✓ closed (this batch) | 3 source pages + 1 person page |
+| 1.2 | ✓ closed | 2 source pages |
+| 1.3 | ✓ closed | 1 source page (qmd) |
+| 2.1 | ✓ closed | 0 (16 cross-link edits) |
+| 2.2 | ✓ closed | 0 (4 callouts resolved) |
+| 2.3 | ✓ closed | 5 person pages |
+| 2.4 | ✓ closed | 2 concept pages |
+| 3 | ✓ closed (11 of 17) | 11 source pages |
+| 4.1 | ✓ closed | 1 source page (Foundational Papers, 8 papers) |
+| 4.2 | ✓ closed (4 of 9) | 4 person pages |
+| 5.1 | ✓ closed | 3 topic pages |
+| 5.2 + 5.3 | ✓ closed | 2 source pages + 1 ecosystem section |
+| Final | ✓ closed | query-readiness pass; 11/11 questions pass |
+
+**Total Round 6 net delta**: 110 → 145 pages (+35 pages over the round). All planned tiers closed. The wiki is queryable across all 11 CLAUDE.md focus-area questions within 1 hop, with primary-source backing for the load-bearing claims.
+

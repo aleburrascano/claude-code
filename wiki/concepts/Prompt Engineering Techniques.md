@@ -184,6 +184,7 @@ Knowing the names lets you:
 ## Cross-references
 
 - [[Prompt Engineering Guide (dair-ai)]] — canonical primary source for technique definitions
+- [[Prompt Engineering Papers Reference]] — the academic-papers layer underneath this catalog (research-paper citations for each technique)
 - [[Encyclopedia of Agentic Coding Patterns]] — pattern-level treatment built on these techniques
 - [[Reducing Hallucinations]] · [[Test Time Compute]] · [[Agentic Search vs RAG]]
 - [[Karpathy Coding Principles]] (Think Before Coding ≈ CoT discipline)

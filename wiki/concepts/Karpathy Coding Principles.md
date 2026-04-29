@@ -126,3 +126,4 @@ A Cursor `.cursor/rules/karpathy-guidelines.mdc` ships in the same repo for cros
 - [[Memory]] (the carrier — these go in your CLAUDE.md)
 - [[Test-Driven Development with Claude]] (Goal-Driven Execution operationalized)
 - [[Andrej Karpathy]] · [[Andrej Karpathy Skills (forrestchang)]]
+- Primary source: [[Karpathy LLM Coding Notes (Dec 2025)]] — the original Dec 2025 X post containing the four pitfalls (silent assumptions, overcomplication, side-effect changes, goal-driven leverage) that this page distills

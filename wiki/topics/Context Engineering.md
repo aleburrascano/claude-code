@@ -148,4 +148,4 @@ For deeper grounding:
 
 - [[Memory]] · [[Skills]] · [[Hooks]] · [[Subagents]] · [[Slash Commands]] · [[Model Context Protocol]]
 - [[Token Efficiency]] · [[Skill Building]] · [[Reducing Hallucinations]]
-- Sources: [[Claude Code System Prompts (Piebald)]] · [[Learn Claude Code (shareAI-lab)]] · [[Claude Code Infrastructure Showcase (diet103)]] · [[Context Engineering Kit (NeoLabHQ)]] · [[claudekit (Carl Rannaberg)]] · [[Encyclopedia of Agentic Coding Patterns]] · [[Andrej Karpathy Skills (forrestchang)]]
+- Sources: [[Claude Code System Prompts (Piebald)]] · [[Learn Claude Code (shareAI-lab)]] · [[Claude Code Infrastructure Showcase (diet103)]] · [[Context Engineering Kit (NeoLabHQ)]] · [[claudekit (Carl Rannaberg)]] · [[Encyclopedia of Agentic Coding Patterns]] · [[Andrej Karpathy Skills (forrestchang)]] · [[Prompt Engineering Papers Reference]] (academic foundation for context-engineering techniques) · [[Diwank Field Notes]] (constitution-as-document framing for CLAUDE.md design) · [[RIPER Workflow (Tony Narlock)]] (Research phase as structured context-building)

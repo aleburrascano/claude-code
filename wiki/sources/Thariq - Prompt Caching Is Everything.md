@@ -110,6 +110,8 @@ Cached prefix stays stable: same stubs always present, same order.
 
 > "You can use the tool search tool through our API to simplify this."
 
+The productized form is documented at [[Anthropic Tool Search]] — `tool_search_tool_regex_20251119` and `tool_search_tool_bm25_20251119` (released 2025-11-19). Up to 10k tools in a catalog, 3-5 surfaced per request. The cognitive threshold the docs name (selection accuracy degrades past 30-50 tools) is the underlying reason for [[Boris Cherny Tips Compendium|Boris's <80 tools rule]].
+
 For our wiki: this is the architectural answer to "MCP server proliferation" ([[Token Efficiency|the <80 tools rule]]). With `defer_loading`, you can have many MCP tools without paying for full schemas every turn.
 
 ## Forking context — compaction
@@ -127,6 +129,8 @@ The naive implementation: separate API call with different system prompt and no 
 Tradeoff: must save a "compaction buffer" so there's room in the context window for the compact message + summary output.
 
 > "You don't need to learn these lessons yourself — based on our learnings from Claude Code we built compaction directly into the API."
+
+The productized form is documented at [[Anthropic Compaction]] — beta header `compact-2026-01-12`, edit type `compact_20260112`, default trigger 150k input tokens. Add `cache_control: ephemeral` to the `compaction` block to cache the summary itself.
 
 ## The 5 lessons (Thariq's distillation)
 
@@ -170,4 +174,4 @@ Three immediately-actionable takeaways:
 2. **Never `/plugin install` or `/plugin uninstall` mid-conversation** unless you're prepared to eat the full cache rebuild cost.
 3. **For model switching, prefer subagents.** "Use Haiku for this part" mid-session may cost more than letting Opus continue.
 
-Cross-references: [[Thariq]] · [[Thariq - Seeing like an Agent]] · [[Token Efficiency]] · [[Hooks]] · [[Subagents]] · [[Memory]] · [[Plugins]] · [[Planning Mode]] · [[Model Context Protocol]]
+Cross-references: [[Thariq]] · [[Thariq - Seeing like an Agent]] · [[Token Efficiency]] · [[Hooks]] · [[Subagents]] · [[Memory]] · [[Plugins]] · [[Planning Mode]] · [[Model Context Protocol]] · [[Anthropic Compaction]] (productization) · [[Anthropic Tool Search]] (productization)

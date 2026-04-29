@@ -131,9 +131,28 @@ For [[Skill Building]]: any skill that does verbose work should consider spawnin
 
 ---
 
+## The three-mode framing ([[Diwank Field Notes]])
+
+The Julep team distinguishes **three modes** of agent operation, each warranting different delegation discipline:
+
+| Mode | Description | Delegation guidance |
+|---|---|---|
+| **Playground** | Exploratory, throwaway, fast-iteration | Skip subagents — overhead exceeds value. Direct work; restart often. |
+| **Pair-programming** | Active collaboration, user reviewing each turn | Subagents for verbose-output isolation only. Keep main agent in active context. |
+| **Production** | Long autonomous runs, lower oversight | Subagents are essential — context isolation, parallel review, specialist routing. |
+
+Mode-aware delegation prevents **overhead in playground** (where speed matters) and **under-delegation in production** (where verification matters). See [[Diwank Field Notes]] for the full framing, plus AIDEV-* anchor comments and sacred-tests rule that complement the mode discipline.
+
+## Multi-agent coordination ([[HCOM (Claude Hook Comms)]])
+
+When subagents need to *communicate* — not just receive briefs and return results, but exchange messages mid-task — the hook system can serve as a message bus. [[HCOM (Claude Hook Comms)]] implements this: subagents emit messages via hook events; sibling agents subscribe via `PreToolUse` / `PostToolUse` matchers. Same plumbing as compression/guardrails/context-injection ([[Hooks]]), applied to inter-agent comms.
+
+When this pays off: large parallel work where subagents need to coordinate ("agent A finished the auth refactor, agent B can now proceed with the frontend"). For sequential workflows, briefs + results are sufficient — don't add comms complexity speculatively.
+
 ## Cross-references
 
 - [[Subagents]] (the primitive)
 - [[Skills]] · [[Hooks]] · [[Memory]]
 - [[Token Efficiency]] · [[Reducing Hallucinations]] · [[Context Engineering]]
-- Sources: [[claudekit (Carl Rannaberg)]] (20+ experts, 6-aspect review) · [[Superpowers (obra)]] (subagent-driven development) · [[Context Engineering Kit (NeoLabHQ)]] (SADD) · [[Learn Claude Code (shareAI-lab)]] (architectural rationale) · [[Matt Pocock Skills]] (parallel design exploration) · [[Claude Code System Prompts (Piebald)]] (delegation prompt)
+- [[Multi-Agent Orchestration]] (when this topic page is built — pairs with this one as "how to coordinate" vs "when to delegate")
+- Sources: [[claudekit (Carl Rannaberg)]] (20+ experts, 6-aspect review) · [[Superpowers (obra)]] (subagent-driven development) · [[Context Engineering Kit (NeoLabHQ)]] (SADD) · [[Learn Claude Code (shareAI-lab)]] (architectural rationale) · [[Matt Pocock Skills]] (parallel design exploration) · [[Claude Code System Prompts (Piebald)]] (delegation prompt) · [[Diwank Field Notes]] (three-mode framing) · [[HCOM (Claude Hook Comms)]] (hooks-as-message-bus)

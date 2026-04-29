@@ -83,7 +83,18 @@ For state changes (plan mode toggling, etc.): make them **tools** that the model
 ### Cache-preserving compaction (cache-safe forking)
 When compacting, send the EXACT same system prompt + user context + system context + tool definitions as parent. Append compaction prompt as new user message. **Cached prefix reused; only new tokens are the compaction prompt.**
 
-This is now built into the Anthropic API (per Thariq), so you don't have to implement it yourself.
+This is now built into the Anthropic API: see [[Anthropic Compaction]] (beta header `compact-2026-01-12`, edit type `compact_20260112`). Default trigger 150k input tokens; add `cache_control: ephemeral` to the `compaction` block to cache the *summary* itself.
+
+### The productizations of Claude Code's caching architecture
+
+Two of Claude Code's internal cache-preservation patterns are now first-class Anthropic API features:
+
+| Internal pattern (Thariq) | Productization | What it gives you |
+|---|---|---|
+| Cache-safe forking on compaction | [[Anthropic Compaction]] | Server-side context truncation that keeps the cached prefix intact. Default 150k trigger; configurable down to 50k. |
+| `defer_loading: true` stub-and-discover | [[Anthropic Tool Search]] | Up to 10k tools in a catalog; 3-5 surfaced per request via regex or BM25 search; deferred tools never enter the system-prompt prefix. |
+
+**Implication**: you no longer need to roll either pattern by hand. Both are documented, supported, ZDR-eligible API features. The `<80 MCP tools` rule below still matters operationally, but Tool Search is the structural fix when you do need to scale past it.
 
 ### Implication: cache hit rate is the leading indicator
 Per [[Thariq - Prompt Caching Is Everything|Thariq]]: at Claude Code, they **alert on cache hit rate; declare SEVs if it drops**. Cache hits cost orders of magnitude less than cache misses. Monitoring cache hit rate is the right primary metric for token efficiency at scale.
@@ -221,6 +232,9 @@ Operates at the **tool-output layer** — different from prompt caching (cached 
 ### 13. Hooks-as-token-efficiency-lever (the pattern)
 RTK + claude-mem are two faces of the same architectural pattern: insert deterministic compression into the agentic loop via [[Hooks]]. **PreToolUse rewrites the call** (RTK); **PostToolUse compresses the result** (claude-mem). Both transparent to Claude, both pay latency outside the LLM's perception, both turn what would otherwise be lost context into structured savings. Anywhere there's a verbose deterministic transform between agent and world, a hook can perform it without touching the agent's logic.
 
+### 14. Cross-agent session continuity ([[claude-code-tools (Prasad Chalasani)]])
+Instead of recompacting at 150k tokens or starting fresh, **hand off to a sibling agent**. claude-code-tools provides session continuity (Rust/Tantivy search across past sessions; cross-agent message passing CC↔Codex). The new agent picks up with a context summary, full historical search, and zero accumulated dumb-zone tokens. Pairs with [[Anthropic Compaction]] as a complement: compaction shrinks the same session; cross-agent handoff starts a fresh one with the necessary context loaded as needed.
+
 ---
 
 ## Anti-patterns
@@ -262,4 +276,4 @@ The wiki itself uses several of these techniques: source pages compress raw docu
 
 - [[Memory]] · [[Skills]] · [[Subagents]] · [[Extended Thinking]] · [[Hooks]] · [[Checkpoints]]
 - [[Context Engineering]] · [[Skill Building]]
-- Sources: [[Claude Code Tips (ykdojo)]] · [[Claude Code System Prompts (Piebald)]] · [[Learn Claude Code (shareAI-lab)]] · [[claudekit (Carl Rannaberg)]] · [[Claude Code Infrastructure Showcase (diet103)]] · [[Context Engineering Kit (NeoLabHQ)]] · [[Thariq - Prompt Caching Is Everything]] · [[code-review-graph (tirth8205)]] · [[GitNexus (abhigyanpatwari)]] · [[graphify (safishamsi)]] · [[rtk (rtk-ai)]] · [[claude-mem (thedotmack)]] · [[CodeBurn (AgentSeal)]] · [[ccusage (ryoppippi)]] · [[Sandboxing]]
+- Sources: [[Claude Code Tips (ykdojo)]] · [[Claude Code System Prompts (Piebald)]] · [[Learn Claude Code (shareAI-lab)]] · [[claudekit (Carl Rannaberg)]] · [[Claude Code Infrastructure Showcase (diet103)]] · [[Context Engineering Kit (NeoLabHQ)]] · [[Thariq - Prompt Caching Is Everything]] · [[code-review-graph (tirth8205)]] · [[GitNexus (abhigyanpatwari)]] · [[graphify (safishamsi)]] · [[rtk (rtk-ai)]] · [[claude-mem (thedotmack)]] · [[CodeBurn (AgentSeal)]] · [[ccusage (ryoppippi)]] · [[Sandboxing]] · [[Anthropic Compaction]] · [[Anthropic Tool Search]] · [[claude-code-tools (Prasad Chalasani)]] (cross-agent session continuity)

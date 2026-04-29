@@ -46,10 +46,9 @@ For [[Memory]]: HumanLayer's CLAUDE.md is the canonical example of "brief, clear
 
 ## "12 Factor Agents"
 
-The team published a foundational framework called "12 Factor Agents" (referenced in the HumanLayer ecosystem, named after the [12-Factor App](https://12factor.net/) methodology). Articulates principles for agent design analogous to how 12-Factor articulates principles for cloud-native apps.
+The team published a foundational framework called "12 Factor Agents" (named after the [12-Factor App](https://12factor.net/) methodology). Articulates principles for agent design analogous to how 12-Factor articulates principles for cloud-native apps.
 
-> [!question] Unverified
-> The full 12 Factor Agents document wasn't fetched in this round. Worth a focused fetch when relevant for [[Subagents]] or [[Skill Building]] design principles.
+Full coverage: [[12 Factor Agents (HumanLayer)]] — dedicated source page with all 12 factors, mapped to the wiki's focus areas (especially [[Reducing Hallucinations|Factors 3, 7, 9, 10, 12]] for hallucination defense and [[Subagents|Factor 10]] for delegation discipline).
 
 ## Podcast: AI That Works
 

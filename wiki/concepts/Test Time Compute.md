@@ -106,4 +106,4 @@ For [[Token Efficiency]]: the cheapest token is the one you don't have to retry.
 - [[Subagents]] · [[When to Delegate to Subagents]]
 - [[Reducing Hallucinations]] · [[Reasoning Quality]] (if/when written)
 - [[Self-Consistency Prompting]] · [[Tree of Thoughts]] · [[Prompt Engineering Techniques]]
-- Sources: [[Boris Cherny Tips Compendium]] (Mar 10 tip is canonical) · [[claudekit (Carl Rannaberg)]] · [[Superpowers (obra)]] · [[Context Engineering Kit (NeoLabHQ)]] · [[Encyclopedia of Agentic Coding Patterns]]
+- Sources: [[Boris Cherny Tips Compendium]] (Mar 10 tip is canonical) · [[claudekit (Carl Rannaberg)]] · [[Superpowers (obra)]] · [[Context Engineering Kit (NeoLabHQ)]] · [[Encyclopedia of Agentic Coding Patterns]] · [[Karpathy LLM Coding Notes (Dec 2025)|Karpathy's leverage framing]] (*"LLMs are exceptionally good at looping until they meet specific goals... Don't tell it what to do, give it success criteria and watch it go"* — same insight as Boris's TTC, arrived at independently)

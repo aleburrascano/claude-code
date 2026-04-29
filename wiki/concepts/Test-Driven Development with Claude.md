@@ -39,7 +39,7 @@ A failing test *is* the success criterion. The LLM doesn't need clarification mi
 | [[Superpowers (obra)\|`test-driven-development`]] | Strict RED-GREEN-REFACTOR, anti-patterns reference, no shortcuts |
 | [[claudekit (Carl Rannaberg)\|test-changed hook]] | PostToolUse hook running tests on every modified file |
 | [[Context Engineering Kit (NeoLabHQ)\|TDD plugin]] | TDD commands with anti-pattern detection and test-fixing orchestration |
-| [[Awesome Claude Code (hesreallyhim)\|TDD Guard (Nizar Selander)]] | Hook-driven system that monitors file ops and **blocks changes that violate TDD principles** |
+| [[TDD Guard (Nizar Selander)]] | Hook-driven system that monitors file ops and **blocks changes that violate TDD principles** |
 | [[Awesome Claude Code (hesreallyhim)\|/tdd, /tdd-implement slash commands]] | Various community implementations |
 
 When a community converges this strongly on a single discipline, it's worth treating as load-bearing.
@@ -61,8 +61,8 @@ Spawn a subagent per task. Subagent operates RED-GREEN-REFACTOR on a fresh conte
 ### Worktree-isolated TDD ([[Superpowers (obra)|using-git-worktrees]])
 Create a feature branch worktree with a clean test baseline. The subagent's RED is unambiguous (clean repo + new failing test). Avoids contamination from in-progress work.
 
-### Hook-enforced TDD ([[Awesome Claude Code (hesreallyhim)|TDD Guard]])
-File-write hooks block modifications that don't follow TDD order. Heavyweight but effective for high-rigor projects.
+### Hook-enforced TDD ([[TDD Guard (Nizar Selander)]])
+File-write hooks block modifications that don't follow TDD order. Heavyweight but effective for high-rigor projects. The canonical example of "hooks as TDD enforcement" — monitors `Write`/`Edit` events, parses the file, checks whether a corresponding test exists and is failing, blocks the operation if not. See [[Hooks]] for the broader hook-as-enforcement pattern.
 
 ## TDD and our focus areas
 
@@ -84,4 +84,4 @@ For [[Skill Building]]: any skill that produces code should have a TDD-shaped va
 - [[Karpathy Coding Principles]] (Goal-Driven Execution principle)
 - [[Vertical Slice]] · [[Spec-Driven Development]] · [[Reducing Hallucinations]]
 - [[Subagents]] · [[Hooks]]
-- Sources: [[Matt Pocock Skills]] · [[Superpowers (obra)]] · [[claudekit (Carl Rannaberg)]] · [[Context Engineering Kit (NeoLabHQ)]] · [[Awesome Claude Code (hesreallyhim)]] (TDD Guard, /tdd commands)
+- Sources: [[Matt Pocock Skills]] · [[Superpowers (obra)]] · [[claudekit (Carl Rannaberg)]] · [[Context Engineering Kit (NeoLabHQ)]] · [[TDD Guard (Nizar Selander)]] (canonical hook-enforced TDD) · [[Awesome Claude Code (hesreallyhim)]] (/tdd slash commands)

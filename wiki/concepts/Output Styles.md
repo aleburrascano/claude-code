@@ -137,4 +137,6 @@ Built-in **Learning** style is genuinely useful when ramping on an unfamiliar co
 - [[Token Efficiency]] (custom terse styles directly affect output tokens)
 - [[Context Engineering]] (system-prompt level customization)
 - [[Boris Cherny Tips Compendium]] (Boris recommends Explanatory style)
+- [[Simone (Helmi)]] — artifact-generation ecosystem; uses Output Styles to enforce consistent artifact format across the team-roles framework. Pairs with [[Skill Building]].
+- [[The Agentic Startup (Rudolf Schmidt)]] — explicit Output Styles adoption for team-based agent roles
 - [Anthropic Output Styles official docs](https://code.claude.com/docs/en/output-styles)

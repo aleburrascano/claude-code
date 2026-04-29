@@ -83,9 +83,19 @@ Without these, you have a generator of API charges. With them, you have a reason
 - **No supervision for risky work** — autonomous Ralph touching production systems is a recipe for disaster. Use [[Claude Code Tips (ykdojo)|containerized risky tasks]] for isolation.
 - **Ralph without committing intermediate state** — if the loop crashes at iteration 47, you want to be able to resume from iteration 46.
 
+## The philosophical foundation: stamina-as-abundance
+
+Per [[Karpathy LLM Coding Notes (Dec 2025)|Karpathy's Dec 2025 notes]]:
+
+> "It's so interesting to watch an agent relentlessly work at something. They never get tired, they never get demoralized, they just keep going and trying things where a person would have given up long ago to fight another day... You realize that **stamina is a core bottleneck to work** and that with LLMs in hand it has been dramatically increased."
+
+Ralph works because tenacity is now the abundant resource. Pre-LLM, "keep trying" hit a human stamina wall. Post-LLM, the wall moves out — and Ralph is the simplest possible exploitation of that shift. The technique is unsmart on purpose; the smartness is in the persistence.
+
+Pair with Karpathy's "give it success criteria and watch it go" — Ralph is *literally* the watch-it-go.
+
 ## Cross-references
 
 - [[Karpathy Coding Principles]] (the philosophical underpinning)
 - [[Subagents]] · [[Hooks]] · [[Checkpoints]]
 - [[TACHES Claude Code Resources]] (Setup Ralph skill)
-- Sources: [[Awesome Claude Code (hesreallyhim)]] (Ralph subsection)
+- Sources: [[Awesome Claude Code (hesreallyhim)]] (Ralph subsection) · [[Karpathy LLM Coding Notes (Dec 2025)]] (stamina-as-bottleneck framing + goal-driven leverage)

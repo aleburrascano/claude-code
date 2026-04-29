@@ -2,7 +2,7 @@
 
 Catalog of every wiki page, organized by type. Updated on every ingest. See [[CLAUDE]] for schema and the wiki's focus areas.
 
-**Total: 110 pages** (63 sources, 29 concepts, 7 topics, 11 people, plus `CLAUDE.md`, `index.md`, `log.md`).
+**Total: 145 pages** (83 sources, 31 concepts, 10 topics, 21 people, plus `CLAUDE.md`, `index.md`, `log.md`).
 
 ---
 
@@ -14,22 +14,35 @@ The wiki's deliverable layer — synthesis pages aimed at the focus areas in [[C
 - [[Claude Code Ecosystem]] — categorized map of community resources around Claude Code (now with 10-workflow comparison table)
 - [[Context Engineering]] — shaping what Claude perceives at each turn; 5 decision-points framework
 - [[Token Efficiency]] — using tokens well; context rot zones, MCP discipline, 16+ techniques
-- [[Reducing Hallucinations]] — 14 structural defenses (Karpathy, TDD, SDD, hooks, Test Time Compute, 12 Factor, Auto Mode, Sandboxing)
+- [[Reducing Hallucinations]] — 18 structural defenses (Karpathy, TDD, SDD, hooks, Test Time Compute, 12 Factor, Auto Mode, Sandboxing, prompt-injection, AIDEV anchors + sacred-tests)
 - [[Skill Building]] — designing skills that fire and stay maintainable; Thariq's 9 categories + 9 design principles
 - [[When to Delegate to Subagents]] — decision framework for context-isolation delegation
+- [[Prompt Caching]] — the architectural foundation; 5 canonical patterns; cache hit rate as leading indicator
+- [[Multi-Agent Orchestration]] — when subagents pay off; coordination mechanisms; 5 archetype patterns
+- [[Cost Observability Playbook]] — measurement → diagnosis → optimization; ccusage + CodeBurn + cache hit rate
 
 ---
 
 ## People
 
+- [[Abhigyan Patwari]] — founder of Akon Labs; creator of GitNexus; foundational AST-graph contributor
 - [[Affaan Mustafa]] — Anthropic Hackathon winner; creator of Everything Claude Code (140k stars)
 - [[Andrej Karpathy]] — AI researcher; originator of LLM coding pitfall observations (full Dec 2025 notes now in wiki)
+- [[Armin Ronacher]] — Flask + Pallets creator; Sentry director; production-grounded agentic-coding voice (lucumr.pocoo.org)
 - [[Boris Cherny]] — Anthropic engineer; creator of Claude Code; 7 compiled tip docs
+- [[Carl Rannaberg]] — creator of claudekit; 6-aspect parallel review + 20+ specialist subagents + extensive hook library
+- [[Cihat Gündüz]] — creator of ContextKit (FlineDev); 4-phase planning + named quality agents per phase
 - [[Daniel Rosehill]] — prolific Claude Code practitioner; 75+ repos across diverse domains
+- [[Dex Horthy]] — HumanLayer founder; "12 Factor Agents" + Advanced Context Engineering + "Getting Claude to Read CLAUDE.md"
+- [[Diwank Tomer]] — Julep co-founder; production practitioner; AIDEV-* anchor comments + sacred-tests rule
 - [[Garry Tan]] — YC President; built gstack (84k stars); role-based skill model
+- [[Geoffrey Huntley]] — originator of the Ralph Wiggum loop pattern; software-economics + agentic-coding essays
 - [[Jesse Vincent]] — founder of Prime Radiant; author of Superpowers
 - [[Matt Pocock]] — TypeScript educator; author of mattpocock/skills
+- [[Safi Shamsi]] — creator of graphify; 15-platform-portable multimodal knowledge graph; EXTRACTED/INFERRED/AMBIGUOUS confidence
 - [[shanraisshan]] — canonical curator; compiles Boris/Thariq tip docs; runs related hub repos
+- [[Simon Willison]] — Datasette + LLM CLI creator; 108+ Claude Code blog posts (largest non-Anthropic single-author corpus)
+- [[Steve Yegge]] — creator of Beads (the project Anthropic explicitly cites as inspiration for the Tasks primitive); long-form essayist + multi-agent orchestrator builder
 - [[Thariq]] — Anthropic engineer; foundational guidance on skills + 1M context management
 - [[Vannevar Bush]] — engineer (1890–1974); originator of the Memex concept
 - [[Wolf McNally]] — author of the Encyclopedia of Agentic Coding Patterns
@@ -53,6 +66,8 @@ The wiki's deliverable layer — synthesis pages aimed at the focus areas in [[C
 - [[Auto Mode]] — classifier-based permission auto-approval; two-layer defense; engineering metrics
 - [[Sandboxing]] — OS-level filesystem + network isolation; 84% prompt reduction
 - [[Routines]] — cloud-hosted scheduled/triggered tasks (Anthropic infra)
+- [[Permission Modes]] — unified taxonomy (manual / plan / acceptEdits / auto / bypass); decision tree; hooks-and-sandboxing interactions
+- [[Action Space Design]] — Thariq's foundational philosophy; what Claude can do, how it's structured; "see like an agent"
 
 ---
 
@@ -92,10 +107,26 @@ The wiki's deliverable layer — synthesis pages aimed at the focus areas in [[C
 - [[Thariq Anthropic Skills + Sessions]] — Anthropic engineer on skill design + 1M context (compiled summaries)
 - [[Thariq - Seeing like an Agent]] — full article: action-space design philosophy + tool-design as art
 - [[Thariq - Prompt Caching Is Everything]] — full article: the architectural rationale for the entire harness
+- [[Thariq - Tasks Tool (Todos to Tasks)]] — TodoWrite → Tasks transition; file-system task store; cross-session broadcast; "unhobble on each model bump"
+- [[Lance Martin - Prompt auto-caching with Claude]] — the 10% cost number, 20-block search rule, manual vs auto-caching mechanism
+- [[Lance Martin - Give Claude a computer]] — Programmatic Tool Calling deep-dive; 5 reasons-to-promote-to-tool; "tools trade-off control with composability"
 - [[Anthropic Claude Code]] — official `anthropics/claude-code` repo (configs/plugins/installers, 119k stars; not the CLI source)
 - [[Anthropic Skills]] — official `anthropics/skills` repo (canonical SKILL.md format + production document skills, 125k stars)
 - [[Anthropic Claude Quickstarts]] — official starter projects
 - [[Anthropic Claude Code GitHub Action]] — official CI/CD integration
+- [[Anthropic Tool Search]] — `tool_search_tool_regex_20251119` / `_bm25_20251119`; productized `defer_loading` (10k tool catalog, 3-5 surfaced per request)
+- [[Anthropic Compaction]] — beta `compact-2026-01-12`; productized cache-safe forking (default 150k trigger; cache the summary block)
+- [[Anthropic Tool Use Overview]] — foundational tool-use docs (the agentic loop; client vs server tools)
+- [[Anthropic Tool Use with Prompt Caching]] — the cache-invalidation matrix (the precise rules)
+- [[Anthropic Effective Context Engineering]] — engineering blog on context rot + just-in-time retrieval
+- [[Anthropic Advanced Tool Use]] — engineering blog on Tool Search + Programmatic Tool Calling + Tool Use Examples
+- [[Anthropic Files API]] — beta `files-api-2025-04-14`; upload-once-reference-many file storage
+- [[Anthropic Batch Processing]] — 50% async discount + 300k output beta on Opus 4.7 / Sonnet 4.6
+- [[Anthropic Extended Thinking API]] — adaptive thinking required on Opus 4.7+; manual deprecated
+- [[Anthropic Models Overview]] — Opus 4.7 / Sonnet 4.6 / Haiku 4.5 selection table + legacy migration
+- [[Anthropic Context Editing]] — selective tool-result + thinking-block clearing (Compaction's scalpel sibling)
+- [[Anthropic Prompt Injection Defenses]] — RL + classifier + red team layered defense; ~1% attack success at 100 attempts
+- [[Anthropic Sandboxing Engineering]] — OS-level isolation (bubblewrap/seatbelt); 84% prompt reduction
 - [[Diwank Field Notes]] — production practitioner perspective; AIDEV-* anchor comments
 
 ### Learning resources, indices, templates
@@ -114,6 +145,8 @@ The wiki's deliverable layer — synthesis pages aimed at the focus areas in [[C
 - [[claude-skills (alirezarezvani)]] — **235+ skills, 9 domains, 13k stars**; persona-driven; engineering + business + C-level + marketing
 - [[agents (wshobson)]] — **184 agents + 150 skills + 98 commands** in 78 plugins; 25 categories; three-tier model routing
 - [[claude-scientific-skills (K-Dense-AI)]] — **133 scientific skills** (biology, chemistry, medicine, physics); 100+ scientific DB integrations
+- [[awesome-agent-skills (VoltAgent)]] — **1,100+ skills, 19.4k stars**; multi-platform; 50+ org-curated (Anthropic, Microsoft, Sentry, Vercel, Stripe)
+- [[awesome-claude-code-toolkit (rohitg00)]] — **135 agents + 35 skills + 42 commands + 176+ plugins** + 20 hooks + 14 MCP configs; reference implementations
 
 ### Heavy frameworks (whole-workflow)
 - [[Everything Claude Code (affaan-m)]] — agent harness performance optimization (140k stars)
@@ -156,6 +189,11 @@ The wiki's deliverable layer — synthesis pages aimed at the focus areas in [[C
 ### Reference / understanding internals
 - [[Claude Code System Prompts (Piebald)]] — version-tracked extraction of CC's actual system prompts
 - [[Learn Claude Code (shareAI-lab)]] — reverse-engineered minimal Claude Code in ~500 lines/session
+- [[qmd (tobi)]] — Tobi Lütke's local hybrid-search engine for markdown (BM25 + vector + LLM rerank); CLI + stdio/HTTP MCP; the wiki's recommended search substrate at scale (23.6k stars, MIT)
+
+### Academic / foundational papers
+- [[Foundational Papers]] — combined catalog: ReAct, Lost in the Middle, Constitutional AI, MemGPT, Tree of Thoughts, Reflexion, Toolformer, SWE-bench (the academic root of the wiki's practitioner content)
+- [[Prompt Engineering Papers Reference]] — DAIR.AI's broader research-paper catalog
 
 ### Practical tactics
 - [[Claude Code Tips (ykdojo)]] — 45 practical tips on context, tokens, multi-model, containers

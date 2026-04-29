@@ -184,6 +184,55 @@ Special category from the awesome list — autonomous loops. See [[Ralph Wiggum 
 | **Anthropic Documentation** — code.claude.com/docs/en/overview | — | (linked throughout) |
 | **Claude Code Documentation Mirror** (Eric Buess, ericbuess/claude-code-docs) — community-maintained mirror with fast updates | — | — |
 
+### Anthropic API docs (Tier 3 ingest, April 2026)
+
+| Source page | Topic |
+|---|---|
+| [[Anthropic Tool Use Overview]] | Foundational tool-use primitive (the agentic loop) |
+| [[Anthropic Tool Search]] | Productized `defer_loading` (10k tool catalog) |
+| [[Anthropic Compaction]] | Productized cache-safe forking (server-side context truncation) |
+| [[Anthropic Context Editing]] | Selective tool-result + thinking-block clearing |
+| [[Anthropic Tool Use with Prompt Caching]] | The cache-invalidation matrix |
+| [[Anthropic Effective Context Engineering]] | The foundational engineering blog post |
+| [[Anthropic Advanced Tool Use]] | Programmatic Tool Calling + Tool Use Examples |
+| [[Anthropic Files API]] | Upload-once-reference-many file storage |
+| [[Anthropic Batch Processing]] | 50% async discount + 300k output beta |
+| [[Anthropic Extended Thinking API]] | Adaptive thinking (Opus 4.7+); manual deprecated |
+| [[Anthropic Models Overview]] | Opus 4.7 / Sonnet 4.6 / Haiku 4.5 selection |
+| [[Anthropic Prompt Injection Defenses]] | RL + classifier + red team layered defense |
+| [[Anthropic Sandboxing Engineering]] | OS-level isolation; 84% prompt reduction |
+
+### Skill / agent catalogs (community-scale)
+
+| Catalog | Stars | Distinct value |
+|---|---|---|
+| [[Awesome Claude Code (hesreallyhim)]] | (canonical) | Most-cited aggregator; LLM-curated submissions |
+| [[awesome-claude-code-toolkit (rohitg00)]] | 1.5k | Reference implementations: 135 agents + 35 skills + 42 commands + 176+ plugins + 20 hooks + 14 MCP configs (Apr 2026) |
+| [[awesome-agent-skills (VoltAgent)]] | 19.4k | Multi-platform; 1,100+ skills from 50+ organizations (Anthropic, Microsoft, Sentry, Vercel, Stripe, etc.) |
+| [[claude-skills (alirezarezvani)]] | 13k | 235+ skills, 9 domains, persona-driven |
+| [[agents (wshobson)]] | (substantial) | 184 agents + 150 skills + 98 commands; three-tier model routing |
+| [[claude-scientific-skills (K-Dense-AI)]] | (specialist) | 133 scientific skills; 100+ scientific DB integrations |
+| [[Anthropic Skills]] | 125k | Anthropic-official; canonical SKILL.md format reference |
+
+### Ongoing sources (podcasts, newsletters, communities)
+
+For news, opinion, and ongoing analysis — these are the channels worth subscribing to. Where the wiki has people pages for the canonical voices, the link is direct; where it doesn't, the publication itself is the surface.
+
+| Source | Type | Why it matters |
+|---|---|---|
+| [[Simon Willison]]'s blog | Practitioner blog | 108+ posts on Claude Code; the largest non-Anthropic single-author corpus |
+| [[Armin Ronacher]]'s `lucumr.pocoo.org` | Practitioner blog | Production-grounded essays on agentic coding |
+| [[Geoffrey Huntley]]'s `ghuntley.com` | Practitioner blog | Ralph loop originator; software-economics + agent essays |
+| [[Dex Horthy]]'s HumanLayer blog | Practitioner blog | Operational discipline (12 Factor Agents, Advanced Context Engineering, "Getting Claude to Actually Read Your CLAUDE.md") |
+| [[Boris Cherny]] tweets / threads | Creator voice | Compiled in [[Boris Cherny Tips Compendium]]; 7 major threads |
+| [[Thariq]] articles / threads | Engineer voice | 2 long-form essays in wiki ([[Thariq - Seeing like an Agent]], [[Thariq - Prompt Caching Is Everything]]) plus tip threads |
+| Latent Space podcast | Podcast | "Agent Engineering" framing (Swyx); covers major Anthropic releases |
+| Lenny's Newsletter | Newsletter | Boris Cherny interview; product-side perspective on Claude Code |
+| AI Engineer Newsletter / Summit | Newsletter + conference | Curates papers + tools at the intersection of agents + production |
+| Code with Claude (Anthropic conference) | Conference | Anthropic's official developer conference; talks recorded |
+
+These four practitioner blogs + the two creator voices (Boris/Thariq) cover most of the ongoing-discourse surface. Subscribe to the practitioner blogs; the creator voices surface in the wiki via the structured tip compendia.
+
 ---
 
 ## Curation philosophy notes

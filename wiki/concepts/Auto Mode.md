@@ -195,9 +195,19 @@ The classifier uses a server-configured model (independent of `/model`). Each ch
 - [Auto Mode blog](https://claude.com/blog/auto-mode)
 - [Engineering deep dive](https://www.anthropic.com/engineering/claude-code-auto-mode)
 
+## Hook-based alternatives and complements
+
+Auto Mode's classifier is a server-side model. Two third-party tools occupy adjacent territory in the permission landscape and are worth knowing about:
+
+- **[[Dippy (Lily Dayton)]]** — AST-based bash auto-approval. Parses each Bash command structurally and routes safe patterns (read-only commands, scoped file ops) to auto-approve while sending destructive patterns (`rm -rf`, `sudo`, `--privileged`) to the prompt. **Cross-platform** (works on Bedrock/Vertex/Foundry where Auto Mode isn't available). Complementary to Auto Mode rather than redundant: Dippy decides at the syntax layer; Auto Mode at the semantic layer.
+- **[[parry-guard (Dmytro Onypko)]]** — prompt-injection scanner with **6 detection layers** running as a `PreToolUse` hook on context-entry tools (Read, WebFetch, Bash piping). The defensive twin to Auto Mode's input-layer probe — Auto Mode's probe is server-side and Anthropic-only; parry-guard runs locally and is platform-portable. Layered with Auto Mode for defense-in-depth.
+
+The pattern: Auto Mode covers the canonical Anthropic-API path with strong server-side classification; Dippy and parry-guard fill the same niches via hooks for cross-platform deployments and defense-in-depth.
+
 ## Cross-references
 
 - [[Sandboxing]] — complementary OS-level isolation; pair for defense-in-depth
 - [[Hooks]] — classifier doesn't replace `PreToolUse` hooks; both can be active
+- [[Permission Modes]] — Auto Mode is one mode in the broader taxonomy
 - [[Subagents]] · [[Token Efficiency]] · [[Reducing Hallucinations]]
-- Sources: [[Boris Cherny Tips Compendium]] (Apr 6 tips emphasize Auto Mode); [Anthropic permission-modes docs](https://code.claude.com/docs/en/permission-modes)
+- Sources: [[Boris Cherny Tips Compendium]] (Apr 6 tips emphasize Auto Mode); [Anthropic permission-modes docs](https://code.claude.com/docs/en/permission-modes); [[Dippy (Lily Dayton)]] (AST bash auto-approval, cross-platform alternative); [[parry-guard (Dmytro Onypko)]] (prompt-injection scanner, defense-in-depth complement)

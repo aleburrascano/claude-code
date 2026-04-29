@@ -191,10 +191,16 @@ This pattern is the answer to the "skills just sit there" problem. See [[Skill B
 ### Git guardrails ([[Matt Pocock Skills|`mattpocock/skills/git-guardrails-claude-code`]])
 **PreToolUse** hooks blocking dangerous git commands (push, reset --hard, clean) before they execute. Better than relying on user vigilance.
 
-### Bash safety ([[Claude Code Tips (ykdojo)|cc-safe]] + Dippy + parry)
+### Bash safety ([[Claude Code Tips (ykdojo)|cc-safe]] + [[Dippy (Lily Dayton)|Dippy]] + [[parry-guard (Dmytro Onypko)|parry-guard]])
 - **cc-safe** — scans approved commands for risky patterns (`rm -rf`, `sudo`, `docker --privileged`)
-- **Dippy** — auto-approves safe bash via AST parsing, prompts for destructive
-- **parry** — prompt-injection scanner for tool inputs/outputs
+- **[[Dippy (Lily Dayton)|Dippy]]** — auto-approves safe bash via AST parsing, prompts for destructive. Cross-platform alternative / complement to Auto Mode's classifier-based approval.
+- **[[parry-guard (Dmytro Onypko)|parry-guard]]** — prompt-injection scanner for tool inputs/outputs with 6 detection layers; PreToolUse hook on context-entry tools (Read, WebFetch, Bash piping). The defensive twin to Auto Mode (which guards output scope).
+
+### TDD enforcement ([[TDD Guard (Nizar Selander)]])
+PreToolUse hook on `Write`/`Edit` that monitors whether changes follow RED-GREEN-REFACTOR order. Blocks (exit 2) operations that violate TDD discipline. Canonical example of "hook as discipline enforcer" — agent doesn't have to remember the rule because the rule is mechanical.
+
+### Multi-agent message-bus ([[HCOM (Claude Hook Comms)]])
+Novel pattern: hooks as a **message bus between agents**. Subagents emit messages on tool events; other agents subscribe via hook. Same plumbing primitive as compression/guardrails/context-injection, applied to inter-agent coordination.
 
 ## Hook performance discipline ([[claudekit (Carl Rannaberg)]])
 
@@ -291,4 +297,4 @@ Useful for debugging "why isn't my hook firing."
 
 - [[Skills]] · [[Subagents]] · [[Plugins]] · [[Checkpoints]] · [[Memory]]
 - [[Skill Building]] · [[Reducing Hallucinations]]
-- Sources: [[claudekit (Carl Rannaberg)]] (extensive hook library) · [[Claude Code Infrastructure Showcase (diet103)]] (skill-activation pattern) · [[Claude HowTo (luongnv89)]] (taxonomy) · [[Matt Pocock Skills]] (git guardrails) · [[claude-mem (thedotmack)]] (PostToolUse memory compression) · [[rtk (rtk-ai)]] (PreToolUse output filtering) · [[GitNexus (abhigyanpatwari)]] (Pre+Post: context injection + freshness) · [[graphify (safishamsi)]] (PreToolUse rule injection across 15 platforms)
+- Sources: [[claudekit (Carl Rannaberg)]] (extensive hook library) · [[Claude Code Infrastructure Showcase (diet103)]] (skill-activation pattern) · [[Claude HowTo (luongnv89)]] (taxonomy) · [[Matt Pocock Skills]] (git guardrails) · [[claude-mem (thedotmack)]] (PostToolUse memory compression) · [[rtk (rtk-ai)]] (PreToolUse output filtering) · [[GitNexus (abhigyanpatwari)]] (Pre+Post: context injection + freshness) · [[graphify (safishamsi)]] (PreToolUse rule injection across 15 platforms) · [[TDD Guard (Nizar Selander)]] (TDD-enforcement hook) · [[parry-guard (Dmytro Onypko)]] (prompt-injection scanner) · [[Dippy (Lily Dayton)]] (AST-based bash auto-approval) · [[HCOM (Claude Hook Comms)]] (hooks-as-message-bus for multi-agent coordination)

@@ -56,7 +56,11 @@ Not in this repo. The CLI binary is distributed via package managers (Homebrew, 
 - [[Anthropic Claude Quickstarts]] — sister official starter projects
 - [[Claude Code Templates (Daniel Avila)]] — community distribution layer that complements this
 
-## Open questions
+## Visibility into the actual implementation
 
-> [!question] Source code visibility
-> The CLI source is not in this repo. Readers asking "where can I read what Claude Code actually does?" should be directed to [[Learn Claude Code (shareAI-lab)]] (reverse-engineered) and [[Claude Code System Prompts (Piebald)]] (system prompts only). The official CLI source itself remains closed.
+The CLI source itself is not open-sourced. For readers asking "where can I see what Claude Code actually does?", the wiki tracks two reverse-engineered or extracted references:
+
+- **[[Learn Claude Code (shareAI-lab)]]** — reverse-engineered minimal Claude Code in ~500 lines/session. Useful for understanding the agentic-loop shape without the production complexity.
+- **[[Claude Code System Prompts (Piebald)]]** — version-tracked extraction of CC's actual system prompts. Useful for understanding what Claude is told to do, even if not how it's implemented.
+
+Together these two cover most of the "what is Claude Code actually doing?" surface area without access to the closed CLI source. For architecture rationale, [[Thariq - Seeing like an Agent]] and [[Thariq - Prompt Caching Is Everything]] are the engineer-voice complements.
