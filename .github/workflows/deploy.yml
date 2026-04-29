@@ -1,0 +1,51 @@
+name: Deploy Wiki
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Clone and configure Quartz
+        run: |
+          git clone --depth 1 https://github.com/jackyzha0/quartz .quartz
+          node - <<'PATCH'
+          const fs = require('fs');
+          const cfg = JSON.parse(fs.readFileSync('_vault.json', 'utf8'));
+          const p = '.quartz/quartz.config.ts';
+          let t = fs.readFileSync(p, 'utf8');
+          t = t.replace(/pageTitle: "[^"]+"/, `pageTitle: "${cfg.pageTitle}"`);
+          t = t.replace(/baseUrl: "[^"]+"/, `baseUrl: "${cfg.baseUrl}"`);
+          t = t.replace(/ignorePatterns: \[[^\]]+\]/, 'ignorePatterns: ["raw", ".quartz", ".github", "CLAUDE.md", "*.sh"]');
+          fs.writeFileSync(p, t);
+          PATCH
+      - name: Build
+        run: cd .quartz && npm ci && chmod +x quartz/bootstrap-cli.mjs && npx quartz build --directory ../
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .quartz/public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

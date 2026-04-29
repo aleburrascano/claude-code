@@ -1,0 +1,21 @@
+name: Duplicate Source Check
+
+on:
+  pull_request:
+    paths:
+      - 'raw/**'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for duplicate filenames in raw/
+        run: |
+          DUPES=$(find raw/ -type f -printf '%f\n' | sort | uniq -d)
+          if [ -n "$DUPES" ]; then
+            echo "Duplicate filenames found in raw/:"
+            echo "$DUPES"
+            exit 1
+          fi
+          echo "No duplicate source filenames found."
