@@ -483,3 +483,48 @@ Up from 110 at session start. **+31 pages**. Three new topic synthesis pages ([[
 
 **Total Round 6 net delta**: 110 → 145 pages (+35 pages over the round). All planned tiers closed. The wiki is queryable across all 11 CLAUDE.md focus-area questions within 1 hop, with primary-source backing for the load-bearing claims.
 
+## [2026-04-29] schema-change | Encode wiki discipline into CLAUDE.md + README.md
+
+- **Why**: Across this round (110 → 145 pages), Alessandro's expectations crystallized into two durable disciplines that weren't yet encoded anywhere: (1) **never leave unfilled gaps** — follow every hyperlink, resolve callouts, no orphan sources; (2) **queryable within 1 hop** — every focus-area question lands on a `wiki/topics/` synthesis page in one navigation step. Future sessions need to inherit these without re-articulation.
+- **Plan source**: `~/.claude/plans/hey-so-can-you-warm-reddy.md` (approved). Audience-driven split: CLAUDE.md gets surgical operational additions; README.md gets a substantial expansion articulating the *what* and *why* for humans/first-session LLMs.
+
+### CLAUDE.md changes (86 → 96 lines; still under the ~100 target)
+
+- **Added Discipline + Queryable subsections** to the Focus section, immediately after "Highest-value layer = `wiki/topics/` synthesis pages":
+  - **Discipline**: never leave unfilled gaps; follow every hyperlink (Tier 3+ candidates); resolve `> [!question]` callouts when verification is cheap; ≥2 inbound wikilinks per source page (no orphans).
+  - **Queryable**: every focus-area question must land on a `wiki/topics/` page within 1 hop; test by walking in cold and asking the obvious question.
+- **Added new operation: Query-readiness pass** between Lint and Schema change. Walks each focus-area question through the wiki as a stranger; pass/fail per question + flagged gaps. Logged as `query-readiness`.
+- **Added `query-readiness`** to the ops list in the log.md spec.
+- **Added 3 new "You do NOT" rules** capturing the most-violated patterns observed during this round's audit:
+  - Leave a source page orphaned (no inbound wikilinks from concepts/topics)
+  - Leave a `> [!question]` callout unresolved when verification is cheap (a WebFetch away)
+  - Quote stale README counts as fact — verify before propagating
+- **Preserved**: the ~100-line target, the Focus area list, the layer architecture, ingest/query/lint/schema-change operations, page conventions, session start checklist, the rest of the You do NOT list.
+
+### README.md changes (19 → 71 lines)
+
+Replaced the existing "what is this / how to fork" README with a discipline-articulation README structured as:
+
+1. **Purpose** — direct framing of "queryable from any future session, primary-source-grounded answers to focus-area questions"
+2. **What this is** — the queryable, LLM-maintained, compounding-knowledge-base framing; pointer to [[LLM Wiki Idea]] and CLAUDE.md
+3. **Topics covered** — 8 focus areas with one-line elaborations
+4. **Discipline section** — the two non-negotiable expectations, articulated for human readers
+5. **Structure** — annotated tree diagram including the new ops in `log.md`
+6. **How to use it** — query workflow + ingest workflow at a glance
+7. **Contributing** + **Setting up your own wiki** — preserved from the prior README
+
+The discipline section in README.md mirrors the CLAUDE.md additions but is written for a human audience (longer-form, more why-context, fewer operational verbs).
+
+### Cross-cutting
+
+- **Cross-link integrity preserved**: README.md links to `CLAUDE.md` (relative) and references `wiki/sources/LLM Wiki Idea.md` (path, since README is rendered on GitHub where Obsidian wikilinks don't resolve).
+- **Token-efficiency cost**: CLAUDE.md added ~10 lines = ~250 tokens loaded each session. Multiplicative with the 4.5KB save from the original 218→84 trim earlier in the wiki's history. Net: still well under the ~100-line discipline.
+- **Out of scope** (per plan): detailed process patterns (Web Clipper artifact handling, pre-ingest takeaways summary, VERIFY-FIRST tagging) stay session-context-aware rather than encoded; `wiki/_meta/` overflow folder stays unused at current line counts.
+
+### Verification
+
+- `wc -l CLAUDE.md README.md` → **96 + 71 = 167 lines total**. Both at target.
+- CLAUDE.md ops list now includes `query-readiness`.
+- README.md cross-links to CLAUDE.md and `wiki/sources/LLM Wiki Idea.md` resolve correctly.
+- Future-session smoke test: next session loading CLAUDE.md will see the Discipline + Queryable framings + the 3 new "You do NOT" rules + the Query-readiness pass operation. The discipline is now load-bearing per session.
+
