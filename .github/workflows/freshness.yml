@@ -1,0 +1,61 @@
+name: Freshness
+
+on:
+  schedule:
+    # Weekly: Sundays at 12:00 UTC.
+    - cron: '0 12 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run vaultkit refresh
+        run: npx -y @aleburrascano/vaultkit refresh --vault-dir .
+
+      - name: Commit report and open PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          DATE=$(date -u +%Y-%m-%d)
+          BRANCH="vaultkit/freshness-report-${DATE}"
+
+          # Bail if refresh produced no new files (sources unchanged).
+          if ! git status --porcelain | grep -q "wiki/_freshness/"; then
+            echo "No new freshness report; nothing to commit."
+            exit 0
+          fi
+
+          git config user.name "vaultkit-freshness-bot"
+          git config user.email "noreply@vaultkit.test"
+          git checkout -b "$BRANCH"
+          git add wiki/_freshness/
+          git commit -m "chore: freshness report for ${DATE}"
+          git push -u origin "$BRANCH"
+
+          BODY=$(cat <<EOF
+          Scheduled freshness report from \`vaultkit refresh\`.
+
+          Review the new entries under \`wiki/_freshness/\` and follow the
+          patch flow in CLAUDE.md (\"Wiki Style & Refresh Policy\") to
+          incorporate any upstream changes.
+          EOF
+          )
+
+          gh pr create \
+            --title "Freshness report for ${DATE}" \
+            --body "$BODY" \
+            --base main \
+            --head "$BRANCH"

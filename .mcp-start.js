@@ -47,11 +47,14 @@ if (EXPECTED) {
 }
 
 // 2. Fetch (don't merge yet) so we can inspect what's incoming.
-spawnSync('git', ['fetch', '--quiet'], {
+const fetchResult = spawnSync('git', ['fetch', '--quiet'], {
   cwd: VAULT_DIR,
   stdio: 'ignore',
   timeout: 5000,
 });
+if (fetchResult.status !== 0) {
+  process.stderr.write('[vaultkit] Warning: git fetch failed for "' + VAULT_NAME + '" — running with cached state.\n');
+}
 
 // 3. Refuse to merge if upstream changes .mcp-start.js — force explicit re-verify.
 const diff = spawnSync('git', ['diff', '--name-only', 'HEAD..@{u}', '--', '.mcp-start.js'], {
@@ -69,11 +72,21 @@ if (diff.status === 0 && (diff.stdout || '').trim() === '.mcp-start.js') {
 }
 
 // 4. Safe to fast-forward — content changes only, no launcher tampering.
-spawnSync('git', ['merge', '--ff-only', '--quiet', '@{u}'], {
+const headBefore = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: VAULT_DIR, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+const mergeResult = spawnSync('git', ['merge', '--ff-only', '--quiet', '@{u}'], {
   cwd: VAULT_DIR,
   stdio: 'ignore',
   timeout: 5000,
 });
+if (mergeResult.status !== 0) {
+  process.stderr.write('[vaultkit] Warning: could not fast-forward "' + VAULT_NAME + '" — local branch may have diverged.\n');
+  process.stderr.write('[vaultkit] Run: cd "' + VAULT_DIR + '" && git status\n');
+} else {
+  const headAfter = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: VAULT_DIR, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+  if (headAfter.stdout && headBefore.stdout && headAfter.stdout.trim() !== headBefore.stdout.trim()) {
+    process.stderr.write('[vaultkit] Pulled new commits for "' + VAULT_NAME + '".\n');
+  }
+}
 
 // 5. Ensure .obsidian/ exists for vault structure validation (gitignored by design).
 const obsidianDir = path.join(VAULT_DIR, '.obsidian');
@@ -88,15 +101,18 @@ if (process.platform === 'win32') {
   process.env.PATH = nodeDir + ';' + (process.env.PATH || '');
 }
 
-const r = spawnSync('npx', ['-y', 'obsidian-mcp-pro'], {
+// 7. Spawn vaultkit's own MCP server (replaces obsidian-mcp-pro per ADR-0011).
+// Goes through npx so it resolves the globally-installed vaultkit binary
+// regardless of PATH quirks. The --vault-dir arg tells the server which
+// vault to bind to; the registry has the canonical name keyed by this dir.
+const r = spawnSync('npx', ['vaultkit', 'mcp-server', '--vault-dir', VAULT_DIR], {
   stdio: 'inherit',
   shell: process.platform === 'win32',
-  env: { ...process.env, OBSIDIAN_VAULT_PATH: VAULT_DIR },
 });
 if (r.error) {
   abort([
     'Failed to start MCP server: ' + r.error.message,
-    'Check your Node.js installation and restart Claude Code.',
+    'Check that vaultkit is installed: npm i -g @aleburrascano/vaultkit',
   ]);
 }
 process.exit(r.status ?? 1);

@@ -94,3 +94,23 @@ Propose first; log as `schema-change`.
 - Leave a `> [!question]` callout unresolved when verification is cheap (a WebFetch away).
 - Quote stale README counts as fact — verify before propagating.
 - Let this file grow beyond ~100 lines (loaded every session — stay tight; detailed conventions live in `wiki/_meta/` if needed).
+
+<!-- vaultkit:wiki-style:start -->
+## Wiki Style & Refresh Policy
+
+### Voice and structure
+<describe the wiki's voice, tone, page templates, what lives in concepts/ vs topics/, naming conventions, etc.>
+
+### Refresh constraints (patch flow)
+- When applying a freshness report, edit existing wiki pages surgically. Never regenerate a wiki page from sources.
+- Scope edits to pages listed under "Wiki pages that cite this source" in the report.
+- For sources in the "text-only compare" or "manual review" sections: use WebFetch to retrieve and compare against the corresponding raw/<file>.md. Patch only on meaningful semantic difference; ignore formatting noise.
+
+### Workflow
+For refresh sessions, cd into this vault directory and run `claude` there. The vault's `.claude/settings.json` will set recommended defaults (model, permissions). Don't rely on the MCP connection from another cwd for refresh work.
+
+### Recommended Claude Code settings for refresh sessions
+Model: <e.g. Sonnet 4.6 or higher>
+Thinking: <enabled / disabled>
+Effort: <low / medium / high>
+<!-- vaultkit:wiki-style:end -->
